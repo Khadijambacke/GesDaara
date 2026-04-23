@@ -15,9 +15,8 @@ class Evenement extends Model
         'datedebut',
         'datefin',
         'communaute_id',
-
     ];
-    ////une communaute peut enregister plusieurs evenement et u n  evenenment est lier a une communaute
+    ////une communaute peut enregister plusieurs evenement et un  evenenment est lier a une communaute
    
     public function communaute()
     {
@@ -27,5 +26,6 @@ class Evenement extends Model
     {
         return $this->belongsTo(Transaction::class);
     }
+   
     
 }
