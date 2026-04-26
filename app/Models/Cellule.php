@@ -11,7 +11,6 @@ class Cellule extends Model
         'numerosection',
         'nomsection',
         'localite',
-
     ];
     public function communaute()
     {

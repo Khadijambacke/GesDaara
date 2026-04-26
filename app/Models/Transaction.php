@@ -17,12 +17,11 @@ class Transaction extends Model
         'users_id',
         'evenement_id'
     ];
-   
     public function users()
     {
         return $this->belongsTo(Users::class,  'communaute_id');
     }
-    
+
     public function evenements()
     {
         return $this->belongsTo(Evenement::class, 'evenement_id');
