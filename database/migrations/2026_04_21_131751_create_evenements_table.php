@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('evenements', function (Blueprint $table) {
             $table->id();
-
             $table->string('numeroevent'); 
             $table->decimal('objectifmontant',8, 2);
             $table->decimal('cotisations',8, 2);

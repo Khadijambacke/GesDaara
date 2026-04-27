@@ -21,11 +21,7 @@ return new class extends Migration
             $table->unsignedBigInteger('cellule_id')->nullable(); 
             $table->foreign('communaute_id')->references('id')->on('communautes');
             $table->foreign('cellule_id')->references('id')->on('cellules');
-        
-
-
-
-            //
+            // 
         });
     }
 
