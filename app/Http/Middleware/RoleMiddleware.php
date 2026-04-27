@@ -15,14 +15,14 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+
         if (!Auth::check()) {
             return redirect('/login');
         }
-
         if (!in_array(Auth::user()->role, $roles)) {
             abort(403);
         }
-
         return $next($request);
+        
     }
 }

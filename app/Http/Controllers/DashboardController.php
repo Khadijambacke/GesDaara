@@ -10,19 +10,18 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-
         // Si pas connecté
         if (!$user) {
             return redirect()->route('register');
         }
-
         // Vérification du rôle
         if ($user->role === 'admin') {
             return view('dashboard.dashboardadmin');
         } elseif ($user->role === 'responsble') {
-            return view('dashboard.dashboardresponsable');
+            return view('password.email');
         } else {
             return view('dashboard.dashboardmembre');
         }
+        
     }
 }
