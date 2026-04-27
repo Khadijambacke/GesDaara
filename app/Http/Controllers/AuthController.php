@@ -11,10 +11,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
-
-
 use Symfony\Component\HttpFoundation\RedirectResponse;
-
 
 class AuthController extends Controller
 {
@@ -37,8 +34,10 @@ class AuthController extends Controller
         ]);
         $user = User::create($validated);
         Auth::login($user);
-        return redirect()->route('show.login')->with('success', 'Compte créé avec succès.');;
+        return redirect()->route('show.login')->with('success', 'Compte créé avec succès.');
+
     }
+
     public function login(Request $request)
     {
     
@@ -61,31 +60,7 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect('/');
     }
-    public function redirectToGoogle()
-{
-    return Socialite::driver('google')->redirect();
-}
-public function handleGoogleCallback()
-{
-    try {
-        $googleUser = Socialite::driver('google')->user();
 
-        $user = User::updateOrCreate(
-            ['email' => $googleUser->getEmail()],
-            [
-                'name' => $googleUser->getName() ?? 'Utilisateur Google',
-                'provider' => 'google',
-                'provider_id' => $googleUser->getId(),
-                'password' => bcrypt(Str::random(32)),
-            ]
-        );
-        Auth::login($user);
-        return redirect()->intended('dashboard');
 
-    } catch (\Exception $e) {
-        return redirect('/login')->with('error', 'Erreur lors de la connexion avec Google.');
-    }
 }
 
-    
-}
