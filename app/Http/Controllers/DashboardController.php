@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-     public function index()
+    public function index()
     {
         $user = Auth::user();
         // Si pas connecté
@@ -18,7 +18,9 @@ class DashboardController extends Controller
         if ($user->role === 'admin') {
             return view('dashboard.dashboardadmin');
         } elseif ($user->role === 'responsble') {
-            return view('responsable.daashboardresponsable');
+
+            return view('responsable.dashboardresponsable');
+
         } else {
             return view('dashboard.dashboardmembre');
         }
