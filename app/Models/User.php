@@ -21,25 +21,8 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'prenom',
-        'telephone',
         'password',
-        'adress',
-        'photo',
-        'communaute_id',
-        'cellule_id'
     ];
-    public function cellule()
-    {
-        return $this->belongsTo(Cellule::class, 'cellule_id');
-    }
-    
-   
-public function transactions()
-{
-    return $this->hasMany(Transaction::class);
-}
-
 
     /**
      * The attributes that should be hidden for serialization.
