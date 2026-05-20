@@ -1,36 +1,98 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title')</title>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cedar: {
+                            50: '#fbf6f1',
+                            100: '#f5ebdf',
+                            200: '#e9d4bf',
+                            300: '#dbb696',
+                            400: '#cc926b',
+                            500: '#c1784e',
+                            600: '#b36443',
+                            700: '#955039',
+                            800: '#794133',
+                            900: '#62372c',
+                            950: '#3c1f19',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fbf6f1; /* cedar-50 */
+            color: #3c1f19; /* cedar-950 */
+        }
+        .sidebar-gradient {
+            background: linear-gradient(180deg, #3c1f19 0%, #62372c 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #dbb696;
+            border-radius: 10px;
+        }
+    </style>
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+<body class="flex min-h-screen overflow-hidden antialiased">
+
+    {{-- Overlay --}}
+    <div id="overlay"
+         onclick="toggleSidebar()"
+         class="fixed inset-0 bg-black/20 hidden lg:hidden z-40">
+    </div>
+
+    {{-- Sidebar --}}
+    @include('layouts.partials.sidebar')
+
+    {{-- Main Content --}}
+    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+
+        {{-- Header --}}
+        @include('layouts.partials.header')
+
+        {{-- Page Content --}}
+        <div class="flex-1 overflow-y-auto p-6 lg:p-10">
+
+            @yield('content')
+
         </div>
-    </body>
+
+    </main>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+    </script>
+
+</body>
 </html>

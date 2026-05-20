@@ -20,11 +20,13 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'nom',
         'email',
         'prenom',
         'telephone',
         'password',
-        'adress',
+        'role',
+        'adresse',
         'photo',
         'communaute_id',
         'cellule_id'
@@ -34,7 +36,10 @@ class User extends Authenticatable
         return $this->belongsTo(Cellule::class, 'cellule_id');
     }
     
-   
+    public function getNameAttribute()
+    {
+        return ($this->Prenom ?? $this->prenom) . ' ' . ($this->Nom ?? $this->nom);
+    }
 public function transactions()
 {
     return $this->hasMany(Transaction::class);

@@ -23,7 +23,12 @@ export default function Login({ status, canResetPassword }) {
 
     return (
         <GuestLayout>
-            <Head title="Log in" />
+            <Head title="Connexion" />
+
+            <div className="mb-6 text-center">
+                <h2 className="text-2xl font-black text-cedar-950">Bon retour !</h2>
+                <p className="text-sm font-medium text-cedar-500 mt-2">Connectez-vous à votre espace SunuDaara.</p>
+            </div>
 
             {status && (
                 <div className="mb-4 text-sm font-medium text-green-600">
@@ -31,68 +36,84 @@ export default function Login({ status, canResetPassword }) {
                 </div>
             )}
 
-            <form onSubmit={submit}>
+            <form onSubmit={submit} className="space-y-6">
+                {/* Email Address */}
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
+                    <label className="block text-[10px] font-black text-cedar-950 uppercase tracking-widest mb-2">Adresse Email</label>
+                    <input
                         id="email"
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full"
+                        className="w-full bg-cedar-50 border border-cedar-200 rounded-xl px-4 py-3 text-sm font-bold text-cedar-900 outline-none focus:ring-2 focus:ring-cedar-300 transition-all"
                         autoComplete="username"
-                        isFocused={true}
+                        required
+                        autoFocus
                         onChange={(e) => setData('email', e.target.value)}
                     />
-
-                    <InputError message={errors.email} className="mt-2" />
+                    <InputError message={errors.email} className="mt-2 text-red-500 text-xs" />
                 </div>
 
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
+                {/* Password */}
+                <div>
+                    <label className="block text-[10px] font-black text-cedar-950 uppercase tracking-widest mb-2">Mot de passe</label>
+                    <input
                         id="password"
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
+                        className="w-full bg-cedar-50 border border-cedar-200 rounded-xl px-4 py-3 text-sm font-bold text-cedar-900 outline-none focus:ring-2 focus:ring-cedar-300 transition-all"
                         autoComplete="current-password"
+                        required
                         onChange={(e) => setData('password', e.target.value)}
                     />
-
-                    <InputError message={errors.password} className="mt-2" />
+                    <InputError message={errors.password} className="mt-2 text-red-500 text-xs" />
                 </div>
 
-                <div className="mt-4 block">
-                    <label className="flex items-center">
-                        <Checkbox
+                {/* Remember Me & Forgot Password */}
+                <div className="flex items-center justify-between">
+                    <label className="inline-flex items-center cursor-pointer">
+                        <input
+                            id="remember_me"
+                            type="checkbox"
                             name="remember"
                             checked={data.remember}
+                            className="rounded border-cedar-300 text-cedar-900 shadow-sm focus:ring-cedar-900"
                             onChange={(e) =>
                                 setData('remember', e.target.checked)
                             }
                         />
-                        <span className="ms-2 text-sm text-gray-600">
-                            Remember me
+                        <span className="ml-2 text-xs font-bold text-cedar-600">
+                            Se souvenir de moi
                         </span>
                     </label>
-                </div>
 
-                <div className="mt-4 flex items-center justify-end">
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            className="text-xs font-bold text-cedar-600 hover:text-cedar-950 transition-colors"
                         >
-                            Forgot your password?
+                            Mot de passe oublié ?
                         </Link>
                     )}
+                </div>
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
+                <div className="pt-2">
+                    <button type="submit" disabled={processing} className="w-full px-6 py-4 bg-cedar-900 hover:bg-cedar-950 text-white rounded-xl text-sm font-black shadow-xl shadow-cedar-950/10 transition-all">
+                        Se connecter
+                    </button>
+                </div>
+
+                <div className="text-center mt-6">
+                    <p className="text-xs font-bold text-cedar-600">
+                        Pas encore de compte ?{' '}
+                        <Link
+                            href={route('register')}
+                            className="text-cedar-900 hover:text-cedar-950 underline decoration-2 underline-offset-4"
+                        >
+                            S'inscrire
+                        </Link>
+                    </p>
                 </div>
             </form>
         </GuestLayout>

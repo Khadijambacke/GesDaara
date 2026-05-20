@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration - GesDaara</title>
+    <title>Administration - SunuDaara</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
@@ -58,7 +58,7 @@
     <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-cedar-950/20 backdrop-blur-sm hidden lg:hidden z-40"></div>
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 w-72 sidebar-gradient text-white transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-50 flex flex-col border-r border-cedar-900">
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 w-64 sidebar-gradient text-white transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-50 flex flex-col border-r border-cedar-900">
         
         <!-- Logo Section -->
         <div class="h-24 flex items-center px-8 border-b border-white/5">
@@ -69,8 +69,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold tracking-tight">GesDaara</h1>
-                    <p class="text-[10px] text-cedar-300 uppercase font-bold tracking-widest leading-none mt-1">Collectif National</p>
+                    <h1 class="text-xl font-bold tracking-tight">SunuDaara</h1>
                 </div>
             </div>
         </div>
@@ -87,18 +86,18 @@
                     <span>Tableau de bord</span>
                 </a>
 
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-cedar-100 transition-all group">
+                <a href="{{route('Toutmembre')}}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-cedar-100 transition-all group">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cedar-400 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                     <span>Gestion des Membres</span>
                 </a>
 
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-cedar-100 transition-all group">
+                <a href="{{ route('Toutcellule') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-cedar-100 transition-all group">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cedar-400 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.040L3 14.535a12.09 12.09 0 0010.125 7.854 12.09 12.09 0 0010.125-7.854l-.507-8.591z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5" />
                     </svg>
-                    <span>Responsables</span>
+                    <span>Gestion des Cellules</span>
                 </a>
             </div>
 
@@ -171,17 +170,13 @@
                 </button>
                 <div>
                     <h2 class="text-2xl font-extrabold text-cedar-950 tracking-tight">Espace Administrateur</h2>
-                    <div class="flex items-center gap-2 mt-1">
-                        <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                        <p class="text-xs text-cedar-600 font-medium uppercase tracking-widest">Connecté • Session en cours</p>
-                    </div>
                 </div>
             </div>
 
             <div class="flex items-center gap-6">
                 <div class="hidden md:flex flex-col text-right">
-                    <p class="text-xs font-bold text-cedar-950 uppercase tracking-widest">Lundi, 11 Mai</p>
-                    <p class="text-[10px] text-cedar-500 font-bold">Heure locale: 14:15</p>
+                    <p id="realtime-date-admin" class="text-xs font-bold text-cedar-950 uppercase tracking-widest">...</p>
+                    <p id="realtime-time-admin" class="text-[10px] text-cedar-500 font-bold">Heure locale: --:--</p>
                 </div>
                 
                 <div class="w-px h-8 bg-cedar-200"></div>
@@ -432,7 +427,7 @@
         </div>
     </main>
 
-    <!-- Sidebar Control Logic -->
+    <!-- Sidebar Control Logic & Real-time Clock -->
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -440,6 +435,24 @@
             sidebar.classList.toggle('-translate-x-full');
             overlay.classList.toggle('hidden');
         }
+
+        function updateRealTime() {
+            const now = new Date();
+            const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            let dateStr = now.toLocaleDateString('fr-FR', options);
+            dateStr = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+            
+            const timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            const dateEl = document.getElementById('realtime-date-admin');
+            const timeEl = document.getElementById('realtime-time-admin');
+            
+            if (dateEl) dateEl.textContent = dateStr;
+            if (timeEl) timeEl.textContent = `Heure locale: ${timeStr}`;
+        }
+        
+        setInterval(updateRealTime, 1000);
+        window.addEventListener('DOMContentLoaded', updateRealTime);
     </script>
 
 </body>
