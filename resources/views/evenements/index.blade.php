@@ -188,7 +188,7 @@
                 <label class="block text-xs font-black text-cedar-950 uppercase tracking-widest mb-2">Statut de départ</label>
                 <select name="statut" class="w-full px-4 py-3 bg-cedar-50 border border-cedar-100 rounded-xl text-sm font-semibold text-cedar-900 focus:bg-white focus:ring-2 focus:ring-cedar-900 outline-none">
                     <option value="planifie">Planifié</option>
-                    <option value="En_cours ">En cours</option>
+                    <option value="En_cours">En cours</option>
                     <option value="termine">Terminé</option>
                 </select>
             </div>

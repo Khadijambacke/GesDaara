@@ -40,7 +40,7 @@ class EvenementController extends Controller
             'cotisations' => 'required|numeric|min:0',
             'datedebut' => 'required|date',
             'datecloture' => 'required|date|after_or_equal:datedebut',
-            'statut' => 'required|in:En_cours ,planifie,termine',
+            'statut' => 'required|in:planifie,En_cours,termine',
         ]);
 
         $data = $validated;
