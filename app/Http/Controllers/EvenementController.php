@@ -23,17 +23,14 @@ class EvenementController extends Controller
                 ->where('id', '!=', $user->id)
                 ->get();
         }
-        
         return view('evenements.index', compact('evenements', 'membres'));
     }
-
     public function store(Request $request)
     {
         // Seul l'administrateur ou le responsable peut créer des événements
         if (!in_array(Auth::user()->role, ['admin', 'responsable', 'responsble'])) {
             abort(403);
         }
-
         $validated = $request->validate([
             'numeroevent' => 'required|string|max:255',
             'objectifmontant' => 'required|numeric|min:0',
@@ -46,9 +43,7 @@ class EvenementController extends Controller
         $data = $validated;
         $data['communaute_id'] = Auth::user()->communaute_id;
         $data['montantotalparticipe'] = 0.00;
-
         Evenement::create($data);
-
         return redirect()->route('Toutevenement')
             ->with('success', 'Événement créé avec succès');
     }
@@ -118,8 +113,8 @@ class EvenementController extends Controller
         }
 
         $evenement = Evenement::where('communaute_id', Auth::user()->communaute_id)->findOrFail($id);
-        
         // Supprimer d'abord les cotisations associées
+        //si cotisations supprimer donc l'argent devrait etre rendue a gerer apres 
         \App\Models\Cotisation::where('evenement_id', $evenement->id)->delete();
         
         $evenement->delete();

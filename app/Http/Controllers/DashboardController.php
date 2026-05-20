@@ -39,7 +39,18 @@ class DashboardController extends Controller
                 'totalCotise'
             ));
         } else {
-            return view('Dashboard.dashboardmembre');
+            // Member dashboard – provide recent events and member's cotisations
+            $evenementsActifs = \App\Models\Evenement::where('communaute_id', $user->communaute_id)
+                ->where('datedebut', '>=', now())
+                ->orderBy('datedebut', 'asc')
+                ->get();
+            $cotisations = \App\Models\Cotisation::where('membre_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->take(5)
+                ->get();
+            // Alias for view consistency
+            $dernieresCotisations = $cotisations;
+            return view('Dashboard.dashboardmembre', compact('evenementsActifs', 'cotisations', 'dernieresCotisations'));
         }
     }
 }
