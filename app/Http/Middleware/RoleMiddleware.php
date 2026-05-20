@@ -20,7 +20,18 @@ class RoleMiddleware
         if (!Auth::check()) {
             return redirect('/login');
         }
-        if (!in_array(Auth::user()->role, $roles)) {
+        $userRole = Auth::user()->role;
+        $normalizedRoles = [];
+        foreach ($roles as $role) {
+            $normalizedRoles[] = $role;
+            if ($role === 'responsable') {
+                $normalizedRoles[] = 'responsble';
+            } elseif ($role === 'responsble') {
+                $normalizedRoles[] = 'responsable';
+            }
+        }
+
+        if (!in_array($userRole, $normalizedRoles)) {
             abort(403);
         }
         return $next($request);

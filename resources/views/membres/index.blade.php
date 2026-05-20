@@ -79,22 +79,22 @@
 
                 <tr class="text-[11px] uppercase tracking-[0.2em] text-cedar-500 font-black">
 
-                    <th class="px-6 py-5">Membre</th>
-                    <th class="px-6 py-5">Mail</th>
-                    <th class="px-6 py-5">Téléphone</th>
-                    <th class="px-6 py-5">Rôle</th>
-                    <th class="px-6 py-5 text-center">Actions</th>
+                    <th class="px-4 py-4">Membre</th>
+                    <th class="px-4 py-4">Mail</th>
+                    <th class="px-4 py-4">Téléphone</th>
+                    <th class="px-4 py-4">Rôle</th>
+                    <th class="px-4 py-4 text-center">Actions</th>
 
                 </tr>
             </thead>
 
             <tbody class="divide-y divide-cedar-50">
 
-                @foreach($membre as $user)
+                @foreach($membres as $user)
                 <!-- Row -->
                 <tr class="group hover:bg-cedar-50/50 transition-colors">
 
-                    <td class="px-6 py-5">
+                    <td class="px-4 py-4">
                         <div class="flex items-center gap-3">
                             <div class="h-8 w-8 rounded-full bg-cedar-100 flex items-center justify-center text-cedar-800 font-black text-xs">
                                 {{ substr($user->prenom ?? $user->Prenom ?? $user->name ?? 'U', 0, 1) }}
@@ -107,38 +107,38 @@
                         </div>
                     </td>
 
-                    <td class="px-6 py-5">
-                        <p class="text-sm text-cedar-950 whitespace-nowrap">
+                    <td class="px-4 py-4">
+                        <p class="text-xs md:text-sm text-cedar-950 whitespace-nowrap">
                             {{ $user->email }}
                         </p>
                     </td>
 
-                    <td class="px-6 py-5">
+                    <td class="px-4 py-4">
                         <p class="text-sm text-cedar-950 whitespace-nowrap">
                             {{ $user->telephone ?? '-' }}
                         </p>
                     </td>
 
                     <!-- Role -->
-                    <td class="px-6 py-5">
-                        <span class="inline-flex items-center px-4 py-1.5 bg-cedar-100 text-cedar-800 text-[10px] font-black rounded-xl border border-cedar-200 uppercase tracking-widest">
+                    <td class="px-4 py-4">
+                        <span class="inline-flex items-center px-3 py-1 bg-cedar-100 text-cedar-800 text-[10px] font-black rounded-xl border border-cedar-200 uppercase tracking-widest">
                             {{ $user->role ?? 'Membre' }}
                         </span>
                     </td>
 
                     <!-- Actions -->
-                    <td class="px-6 py-5">
+                    <td class="px-4 py-4">
                         <div class="flex items-center justify-center gap-2">
 
                             <!-- Edit -->
-                            <a href="{{ route('editmemebre', $user->id) }}" class="w-9 h-9 rounded-xl bg-blue-50 hover:bg-blue-100 flex items-center justify-center transition-all shadow-sm" title="Modifier">
+                            <a href="{{ Auth::user()->role === 'admin' ? route('editmemebre', $user->id) : route('responsable.editmembre', $user->id) }}" class="w-9 h-9 rounded-xl bg-blue-50 hover:bg-blue-100 flex items-center justify-center transition-all shadow-sm" title="Modifier">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                 </svg>
                             </a>
 
                             <!-- Delete -->
-                            <form action="{{ route('deletememebre', $user->id) }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer ce membre ?');">
+                            <form action="{{ Auth::user()->role === 'admin' ? route('deletememebre', $user->id) : route('responsable.deletemembre', $user->id) }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer ce membre ?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="w-9 h-9 rounded-xl bg-red-50 hover:bg-red-100 flex items-center justify-center transition-all shadow-sm">
@@ -174,7 +174,7 @@
             </button>
         </div>
 
-        <form action="{{ route('storememebre') }}" method="POST" class="p-6">
+        <form action="{{ Auth::user()->role === 'admin' ? route('storememebre') : route('responsable.storemembre') }}" method="POST" class="p-6">
             @csrf
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

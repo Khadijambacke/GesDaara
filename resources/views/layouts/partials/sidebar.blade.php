@@ -47,7 +47,8 @@
             </a>
 
             <!-- Membres -->
-            <a href="{{ route('Toutmembre') }}"
+            @if(in_array(Auth::user()->role, ['admin', 'responsable', 'responsble']))
+            <a href="{{ in_array(Auth::user()->role, ['responsable', 'responsble']) ? route('responsable.membres') : route('Toutmembre') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-cedar-100 transition-all group">
 
                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -62,10 +63,12 @@
                           d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
 
-                <span>Gestion des Membres</span>
+                <span>{{ in_array(Auth::user()->role, ['responsable', 'responsble']) ? 'Membres de ma section' : 'Gestion des Membres' }}</span>
             </a>
+            @endif
 
             <!-- Cellules -->
+            @if(Auth::user()->role === 'admin')
             <a href="{{ route('Toutcellule') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-cedar-100 transition-all group">
 
@@ -83,6 +86,7 @@
 
                 <span>Gestion des Cellules</span>
             </a>
+            @endif
 
         </div>
 
@@ -141,7 +145,7 @@
             </p>
 
             <!-- Événements -->
-            <a href="#"
+            <a href="{{ route('Toutevenement') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-cedar-100 transition-all group">
 
                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -160,6 +164,7 @@
             </a>
 
             <!-- Communautés -->
+            @if(Auth::user()->role === 'admin')
             <a href="#"
                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-cedar-100 transition-all group">
 
@@ -177,6 +182,7 @@
 
                 <span>Communautés</span>
             </a>
+            @endif
 
         </div>
     </div>

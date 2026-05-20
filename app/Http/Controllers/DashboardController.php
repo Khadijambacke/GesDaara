@@ -10,19 +10,36 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        // Si pas connecté
         if (!$user) {
             return redirect()->route('register');
         }
-        // Vérification du rôle
+       
         if ($user->role === 'admin') {
-            return view('dashboard.dashboardadmin');
-        } elseif ($user->role === 'responsble') {
+            return view('Dashboard.dashboardadmin');
+        } elseif ($user->role === 'responsble' || $user->role === 'responsable') {
+            $cellule = \App\Models\Cellule::find($user->cellule_id);
+            $totalMembres = \App\Models\User::where('cellule_id', $user->cellule_id)->count();
+            
+            $evenementsActifs = \App\Models\Evenement::where('communaute_id', $user->communaute_id)->count();
+                
+            $membreIds = \App\Models\User::where('cellule_id', $user->cellule_id)->pluck('id');
+            $dernieresCotisations = \App\Models\Cotisation::whereIn('membre_id', $membreIds)
+                ->with('users')
+                ->latest()
+                ->take(5)
+                ->get();
+                
+            $totalCotise = \App\Models\Cotisation::whereIn('membre_id', $membreIds)->sum('montantcotise');
 
-            return view('responsable.dashboardresponsable');
-
+            return view('Dashboard.dashboardresponsable', compact(
+                'cellule',
+                'totalMembres',
+                'evenementsActifs',
+                'dernieresCotisations',
+                'totalCotise'
+            ));
         } else {
-            return view('dashboard.dashboardmembre');
+            return view('Dashboard.dashboardmembre');
         }
     }
 }

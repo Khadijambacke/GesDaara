@@ -76,7 +76,7 @@
         @include('layouts.partials.header')
 
         {{-- Page Content --}}
-        <div class="flex-1 overflow-y-auto p-6 lg:p-10">
+        <div class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
 
             @yield('content')
 

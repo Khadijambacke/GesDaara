@@ -12,7 +12,7 @@
         </p>
     </div>
     
-    <a href="{{ route('Toutmembre') }}" class="inline-flex items-center gap-3 px-6 py-4 bg-white text-cedar-900 border border-cedar-200 hover:bg-cedar-50 rounded-2xl text-sm font-black shadow-sm transition-all">
+    <a href="{{ Auth::user()->role === 'admin' ? route('Toutmembre') : route('responsable.membres') }}" class="inline-flex items-center gap-3 px-6 py-4 bg-white text-cedar-900 border border-cedar-200 hover:bg-cedar-50 rounded-2xl text-sm font-black shadow-sm transition-all">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
@@ -28,7 +28,7 @@
         <p class="text-sm text-cedar-500 mt-1">Modifiez les champs ci-dessous pour mettre à jour le profil.</p>
     </div>
 
-    <form action="{{ route('updatememebre', $membre->id) }}" method="POST" class="p-8">
+    <form action="{{ Auth::user()->role === 'admin' ? route('updatememebre', $membre->id) : route('responsable.updatemembre', $membre->id) }}" method="POST" class="p-8">
         @csrf
         @method('PUT')
 

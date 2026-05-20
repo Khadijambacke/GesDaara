@@ -1,4 +1,4 @@
-<header class="h-24 bg-white/80 backdrop-blur-md border-b border-cedar-200 flex items-center justify-between px-10 flex-shrink-0 z-30">
+<header class="h-24 bg-white/80 backdrop-blur-md border-b border-cedar-200 flex items-center justify-between px-4 md:px-6 lg:px-8 flex-shrink-0 z-30">
 
     <!-- Left Section -->
     <div class="flex items-center gap-6">

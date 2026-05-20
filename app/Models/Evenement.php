@@ -13,7 +13,8 @@ class Evenement extends Model
         'cotisations',
         'montantotalparticipe',
         'datedebut',
-        'datefin',
+        'datecloture',
+        'statut',
         'communaute_id',
     ];
     ////une communaute peut enregister plusieurs evenement et un  evenenment est lier a une communaute
