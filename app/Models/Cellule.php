@@ -12,7 +12,19 @@ class Cellule extends Model
         'nomsection',
         'localite',
         'communaute_id',
+        'registration_token',
     ];
+    
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($cellule) {
+            if (empty($cellule->registration_token)) {
+                $cellule->registration_token = \Illuminate\Support\Str::random(32);
+            }
+        });
+    }
+
     public function communaute()
     {
         return $this->belongsTo(Communaute::class);

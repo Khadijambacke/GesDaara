@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Evenement;
 use App\Models\User;
+use App\Models\Cotisation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +15,7 @@ class EvenementController extends Controller
         $user = Auth::user();
         $evenements = Evenement::where('communaute_id', $user->communaute_id)->get();
         
-        if ($user->role === 'admin') {
+        if ($user->role === 'admin' || $user->role === 'owner') {
             $membres = User::where('communaute_id', $user->communaute_id)
                 ->where('id', '!=', $user->id)
                 ->get();
@@ -28,7 +29,7 @@ class EvenementController extends Controller
     public function store(Request $request)
     {
         // Seul l'administrateur ou le responsable peut créer des événements
-        if (!in_array(Auth::user()->role, ['admin', 'responsable', 'responsble'])) {
+        if (!in_array(Auth::user()->role, ['owner', 'admin', 'responsable', 'responsble'])) {
             abort(403);
         }
         $validated = $request->validate([
@@ -54,16 +55,16 @@ class EvenementController extends Controller
         $evenement = Evenement::where('communaute_id', $user->communaute_id)->findOrFail($id);
         
         // Charger les cotisations pour cet événement
-        if ($user->role === 'admin') {
+        if ($user->role === 'admin' || $user->role === 'owner') {
             // L'admin voit toutes les cotisations de sa communauté
-            $cotisations = \App\Models\Cotisation::where('evenement_id', $evenement->id)
+            $cotisations = Cotisation::where('evenement_id', $evenement->id)
                 ->with('users')
                 ->latest()
                 ->get();
         } else {
             // Le responsable voit uniquement les cotisations des membres de sa section
             $membreIds = User::where('cellule_id', $user->cellule_id)->pluck('id');
-            $cotisations = \App\Models\Cotisation::where('evenement_id', $evenement->id)
+            $cotisations = Cotisation::where('evenement_id', $evenement->id)
                 ->whereIn('membre_id', $membreIds)
                 ->with('users')
                 ->latest()
@@ -75,7 +76,7 @@ class EvenementController extends Controller
 
     public function edit($id)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'responsable', 'responsble'])) {
+        if (!in_array(Auth::user()->role, ['owner', 'admin', 'responsable', 'responsble'])) {
             abort(403);
         }
 
@@ -85,7 +86,7 @@ class EvenementController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'responsable', 'responsble'])) {
+        if (!in_array(Auth::user()->role, ['owner', 'admin', 'responsable', 'responsble'])) {
             abort(403);
         }
 
@@ -108,14 +109,14 @@ class EvenementController extends Controller
 
     public function destroy($id)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'responsable', 'responsble'])) {
+        if (!in_array(Auth::user()->role, ['owner', 'admin', 'responsable', 'responsble'])) {
             abort(403);
         }
 
         $evenement = Evenement::where('communaute_id', Auth::user()->communaute_id)->findOrFail($id);
         // Supprimer d'abord les cotisations associées
         //si cotisations supprimer donc l'argent devrait etre rendue a gerer apres 
-        \App\Models\Cotisation::where('evenement_id', $evenement->id)->delete();
+        Cotisation::where('evenement_id', $evenement->id)->delete();
         
         $evenement->delete();
 

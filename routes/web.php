@@ -53,10 +53,20 @@ Route::get('/', [DashboardController::class, 'index'])
         Route::delete('/dashboard/responsable/membres/delete/{id}', [MembreController::class, 'responsableDestroy'])->name('responsable.deletemembre');
     });
 
+use App\Http\Controllers\Auth\InvitationController;
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// Routes publiques pour l'activation d'invitation et acceptation de la charte (individuelle)
+Route::get('/invitation/accepter/{token}', [InvitationController::class, 'accept'])->name('invitation.accept');
+Route::post('/invitation/accepter/{token}', [InvitationController::class, 'storeAccept'])->name('invitation.store');
+
+// Routes publiques pour l'auto-inscription globale par section/cellule
+Route::get('/rejoindre/section/{cellule_token}', [InvitationController::class, 'registerSection'])->name('section.register');
+Route::post('/rejoindre/section/{cellule_token}', [InvitationController::class, 'storeRegisterSection'])->name('section.store');
 
 require __DIR__.'/auth.php';

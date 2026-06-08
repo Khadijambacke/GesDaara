@@ -2,6 +2,23 @@
 
 @section('content')
 <!-- Top Section -->
+@if(session('success'))
+    <div class="mb-6 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+        <div>
+            <p class="font-bold text-sm">{{ session('success') }}</p>
+            @if(session('invitation_link'))
+                <p class="text-xs text-emerald-600 mt-1 font-medium">Lien d'activation pour le membre (cliquez pour copier) :</p>
+                <div class="mt-2 flex items-center gap-2">
+                    <input type="text" readonly value="{{ session('invitation_link') }}" id="invitationLinkInput" class="bg-white border border-emerald-100 rounded-xl px-3 py-1.5 text-xs text-emerald-700 w-full sm:w-96 select-all outline-none font-mono">
+                    <button onclick="navigator.clipboard.writeText('{{ session('invitation_link') }}'); alert('Lien copié dans le presse-papiers !');" class="bg-emerald-900 hover:bg-emerald-950 text-white rounded-xl px-4 py-1.5 text-xs font-black transition-all">
+                        Copier
+                    </button>
+                </div>
+            @endif
+        </div>
+    </div>
+@endif
+
 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10">
 
     <div>
@@ -160,9 +177,9 @@
 
 <!-- Modal Création Membre -->
 <div id="createModal" class="fixed inset-0 bg-cedar-950/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-xl overflow-hidden border border-cedar-100 transform transition-all">
+    <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto border border-cedar-100 transform transition-all">
         
-        <div class="px-6 py-4 border-b border-cedar-100 flex justify-between items-center bg-cedar-50/50">
+        <div class="px-6 py-4 border-b border-cedar-100 flex justify-between items-center bg-cedar-50/50 sticky top-0 z-20 backdrop-blur-sm">
             <div>
                 <h3 class="text-lg font-black text-cedar-950">Nouveau Membre</h3>
                 <p class="text-[11px] text-cedar-500 font-medium">Informations de l'utilisateur</p>
@@ -220,6 +237,13 @@
                     </select>
                 </div>
                 <div>
+                    <label class="block text-[10px] font-black text-cedar-950 uppercase tracking-widest mb-1">Genre</label>
+                    <select name="genre" required class="w-full bg-cedar-50 border border-cedar-200 rounded-lg px-3 py-2 text-sm font-bold text-cedar-900 outline-none focus:ring-2 focus:ring-cedar-300 cursor-pointer">
+                        <option value="homme">Homme / Garçon</option>
+                        <option value="femme">Femme / Fille</option>
+                    </select>
+                </div>
+                <div>
                     <label class="block text-[10px] font-black text-cedar-950 uppercase tracking-widest mb-1">Rôle</label>
                     <select name="role" required class="w-full bg-cedar-50 border border-cedar-200 rounded-lg px-3 py-2 text-sm font-bold text-cedar-900 outline-none focus:ring-2 focus:ring-cedar-300 cursor-pointer">
                         <option value="membre">Membre</option>
@@ -228,12 +252,76 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-[10px] font-black text-cedar-950 uppercase tracking-widest mb-1">Mot de passe temporaire</label>
-                    <input type="password" name="password" required class="w-full bg-cedar-50 border border-cedar-200 rounded-lg px-3 py-2 text-sm font-bold text-cedar-900 outline-none focus:ring-2 focus:ring-cedar-300">
+                    <label class="block text-[10px] font-black text-cedar-950 uppercase tracking-widest mb-1">Prénom du Père</label>
+                    <input type="text" name="nom_pere" class="w-full bg-cedar-50 border border-cedar-200 rounded-lg px-3 py-2 text-sm font-bold text-cedar-900 outline-none focus:ring-2 focus:ring-cedar-300">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-cedar-950 uppercase tracking-widest mb-1">Prénom/Nom de la Mère</label>
+                    <input type="text" name="nom_mere" class="w-full bg-cedar-50 border border-cedar-200 rounded-lg px-3 py-2 text-sm font-bold text-cedar-900 outline-none focus:ring-2 focus:ring-cedar-300">
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-[10px] font-black text-cedar-950 uppercase tracking-widest mb-1">Catégorie d'Âge</label>
+                    <select id="modal_type_membre" name="type_membre" required class="w-full bg-cedar-50 border border-cedar-200 rounded-lg px-3 py-2 text-sm font-bold text-cedar-900 outline-none focus:ring-2 focus:ring-cedar-300 cursor-pointer">
+                        <option value="adulte">Adulte</option>
+                        <option value="adolescent">Adolescent</option>
+                        <option value="enfant">Enfant</option>
+                    </select>
+                </div>
+
+                <!-- SECTION : ADULTE -->
+                <div id="modal-fields-adulte" class="sm:col-span-2 bg-gray-50 border border-gray-150 rounded-xl p-3 grid grid-cols-1 sm:grid-cols-2 gap-3" style="display: none;">
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-700 uppercase mb-1">NIN (Identité)</label>
+                        <input type="text" name="nin" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-bold text-gray-950 outline-none focus:ring-2 focus:ring-cedar-300">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-700 uppercase mb-1">Profession</label>
+                        <input type="text" name="profession" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-bold text-gray-950 outline-none focus:ring-2 focus:ring-cedar-300">
+                    </div>
+                </div>
+
+                <!-- SECTION : ADOLESCENT -->
+                <div id="modal-fields-adolescent" class="sm:col-span-2 bg-gray-50 border border-gray-150 rounded-xl p-3 grid grid-cols-1 sm:grid-cols-2 gap-3" style="display: none;">
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-700 uppercase mb-1">Date de naissance</label>
+                        <input type="date" name="date_naissance" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-bold text-gray-950 outline-none focus:ring-2 focus:ring-cedar-300">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-700 uppercase mb-1">Établissement Scolaire</label>
+                        <input type="text" name="etablissement_scolaire" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-bold text-gray-950 outline-none focus:ring-2 focus:ring-cedar-300">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-700 uppercase mb-1">Niveau d'Études</label>
+                        <input type="text" name="niveau_etudes" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-bold text-gray-950 outline-none focus:ring-2 focus:ring-cedar-300">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-700 uppercase mb-1">Parent / Tuteur</label>
+                        <input type="text" name="parent_tuteur_nom" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-bold text-gray-950 outline-none focus:ring-2 focus:ring-cedar-300">
+                    </div>
+                </div>
+
+                <!-- SECTION : ENFANT -->
+                <div id="modal-fields-enfant" class="sm:col-span-2 bg-gray-50 border border-gray-150 rounded-xl p-3 grid grid-cols-1 sm:grid-cols-2 gap-3" style="display: none;">
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-700 uppercase mb-1">Date de naissance</label>
+                        <input type="date" name="date_naissance" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-bold text-gray-950 outline-none focus:ring-2 focus:ring-cedar-300">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-700 uppercase mb-1">Parent / Tuteur</label>
+                        <input type="text" name="parent_tuteur_nom" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-bold text-gray-950 outline-none focus:ring-2 focus:ring-cedar-300">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-700 uppercase mb-1">Téléphone Parent</label>
+                        <input type="text" name="parent_tuteur_telephone" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-bold text-gray-950 outline-none focus:ring-2 focus:ring-cedar-300">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-700 uppercase mb-1">Établissement (Opt)</label>
+                        <input type="text" name="etablissement_scolaire" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-bold text-gray-950 outline-none focus:ring-2 focus:ring-cedar-300">
+                    </div>
                 </div>
             </div>
 
-            <div class="mt-6 pt-4 border-t border-cedar-100 flex justify-end gap-3">
+            <div class="mt-6 pt-4 border-t border-cedar-100 flex justify-end gap-3 sticky bottom-0 bg-white z-15">
                 <button type="button" onclick="document.getElementById('createModal').classList.add('hidden')" class="px-4 py-2 bg-white text-cedar-900 border border-cedar-200 hover:bg-cedar-50 rounded-lg text-xs font-black transition-all">
                     Annuler
                 </button>
@@ -244,5 +332,43 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.getElementById('modal_type_membre');
+        const fieldsAdulte = document.getElementById('modal-fields-adulte');
+        const fieldsAdolescent = document.getElementById('modal-fields-adolescent');
+        const fieldsEnfant = document.getElementById('modal-fields-enfant');
+
+        function toggleFields() {
+            const val = typeSelect.value;
+            // Hide all
+            fieldsAdulte.style.display = 'none';
+            fieldsAdolescent.style.display = 'none';
+            fieldsEnfant.style.display = 'none';
+
+            // Disable all inputs inside hidden blocks to prevent validation errors on submission
+            fieldsAdulte.querySelectorAll('input, select').forEach(el => el.disabled = true);
+            fieldsAdolescent.querySelectorAll('input, select').forEach(el => el.disabled = true);
+            fieldsEnfant.querySelectorAll('input, select').forEach(el => el.disabled = true);
+
+            if (val === 'adulte') {
+                fieldsAdulte.style.display = 'grid';
+                fieldsAdulte.querySelectorAll('input, select').forEach(el => el.disabled = false);
+            } else if (val === 'adolescent') {
+                fieldsAdolescent.style.display = 'grid';
+                fieldsAdolescent.querySelectorAll('input, select').forEach(el => el.disabled = false);
+            } else if (val === 'enfant') {
+                fieldsEnfant.style.display = 'grid';
+                fieldsEnfant.querySelectorAll('input, select').forEach(el => el.disabled = false);
+            }
+        }
+
+        if (typeSelect) {
+            typeSelect.addEventListener('change', toggleFields);
+            toggleFields();
+        }
+    });
+</script>
 
 @endsection

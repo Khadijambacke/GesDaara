@@ -1,80 +1,137 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use App\Models\Cellule;
-use App\Http\Controllers\UserController;
 
+use App\Models\Cellule;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class MembreController extends Controller
 {
     public function index()
     {
-        $membres = User::where('communaute_id', Auth::user()->communaute_id)->get();
-        $cellules = Cellule::where('communaute_id', Auth::user()->communaute_id)->get();
+        $user = Auth::user();
+        if ($user->role === 'admin' || $user->role === 'owner') {
+            $membres = User::where('communaute_id', $user->communaute_id)->get();
+            $cellules = Cellule::where('communaute_id', $user->communaute_id)->get();
+        } else {
+            $membres = User::where('cellule_id', $user->cellule_id)->get();
+            $cellules = Cellule::where('id', $user->cellule_id)->get();
+        }
         return view('membres.index', compact('membres', 'cellules'));
     }
+
     public function create()
     {
         return view('membres.create');
-    }   
+    }
+
+    protected function getValidationRules(Request $request, $id = null)
+    {
+        $rules = [
+            'prenom' => 'required|string|max:255',
+            'nom' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email' . ($id ? ",{$id}" : ''),
+            'adresse' => 'required|string|max:255',
+            'indicatif' => 'required|string',
+            'telephone' => 'required|string|max:255',
+            'role' => 'required|string',
+            'cellule_id' => 'required|exists:cellules,id',
+            'type_membre' => 'required|in:adulte,adolescent,enfant',
+            'genre' => 'required|in:homme,femme',
+            'nom_pere' => 'nullable|string|max:255',
+            'nom_mere' => 'nullable|string|max:255',
+        ];
+
+        if ($request->input('type_membre') === 'adulte') {
+            $rules['nin'] = 'required|string|max:255';
+            $rules['profession'] = 'required|string|max:255';
+        } elseif ($request->input('type_membre') === 'adolescent') {
+            $rules['etablissement_scolaire'] = 'required|string|max:255';
+            $rules['niveau_etudes'] = 'required|string|max:255';
+            $rules['parent_tuteur_nom'] = 'required|string|max:255';
+            $rules['date_naissance'] = 'required|date';
+        } elseif ($request->input('type_membre') === 'enfant') {
+            $rules['date_naissance'] = 'required|date';
+            $rules['parent_tuteur_nom'] = 'required|string|max:255';
+            $rules['parent_tuteur_telephone'] = 'required|string|max:255';
+            $rules['etablissement_scolaire'] = 'nullable|string|max:255';
+        }
+
+        return $rules;
+    }
+
     public function store(Request $request)
     {
-      $validated = $request->validate([
-        'prenom' => 'required|string|max:255',
-        'nom' => 'required|string|max:100',
-        'email' => 'required|email|unique:users,email',
-        'adresse' => 'required|string|max:255',
-        'indicatif' => 'required|string',
-        'telephone' => 'required|string|max:255',
-        'password' => 'required|string|min:6',
-        'role' => 'required|string',
-        'cellule_id' => 'required|exists:cellules,id',
-      ]);
-      $validerchamps = $validated;
-      $validerchamps['telephone'] = $request->indicatif . ' ' . $request->telephone;
-      $validerchamps['communaute_id'] = Auth::user()->communaute_id;
-      
-      User::create($validerchamps);
-      return redirect()->route('Toutmembre')
-        ->with('success', 'membre  créé avec succès');
+        $rules = $this->getValidationRules($request);
+        $validated = $request->validate($rules);
+
+        $validerchamps = $validated;
+        $validerchamps['telephone'] = $request->indicatif . ' ' . $request->telephone;
+        $validerchamps['communaute_id'] = Auth::user()->communaute_id;
+        
+        // Generate secure temporary password and invitation token
+        $validerchamps['password'] = Hash::make(Str::random(16));
+        $validerchamps['invitation_token'] = Str::random(60);
+        $validerchamps['cgu_accepted'] = false;
+
+        $membre = User::create($validerchamps);
+
+        $invitationLink = route('invitation.accept', ['token' => $membre->invitation_token]);
+
+        return redirect()->route('Toutmembre')
+            ->with('success', 'Membre créé avec succès.')
+            ->with('invitation_link', $invitationLink);
     }
+
     public function edit($id)
     {
         $membre = User::where('communaute_id', Auth::user()->communaute_id)->findOrFail($id);
         $cellules = Cellule::where('communaute_id', Auth::user()->communaute_id)->get();
         return view('membres.edit', compact('membre', 'cellules'));
     }
+
     public function update(Request $request, $id)
     {
-        $membre = User::where('communaute_id', Auth::user()->communaute_id)
-        ->findOrFail($id);
+        $membre = User::where('communaute_id', Auth::user()->communaute_id)->findOrFail($id);
         
-        $validated = $request->validate([
-            'prenom' => 'required|string|max:255',
-            'nom' => 'required|string|max:100',
-            ////$id pour ingnorer que c doit ete unique si toute fois l'utilisateur decide de changer les infos de son compte
-            'email' => 'required|email|unique:users,email,'.$id,
-            'adresse' => 'required|string|max:255',
-            'indicatif' => 'required|string',
-            'telephone' => 'required|string|max:255',
-            'role' => 'required|string',
-            'cellule_id' => 'required|exists:cellules,id',
-        ]);
-        ////concatenantion de l'indicatif et le numero
-      $validerinfos = $validated;
-      $validerinfos['telephone'] = $request->indicatif . ' ' . $request->telephone;
-      $validerinfos['communaute_id'] = Auth::user()->communaute_id;
-      $membre->update($validerinfos);
-      return redirect()->route('Toutmembre')->with('success', 'Membre modifié avec succès');
+        $rules = $this->getValidationRules($request, $id);
+        $validated = $request->validate($rules);
+
+        $validerinfos = $validated;
+        $validerinfos['telephone'] = $request->indicatif . ' ' . $request->telephone;
+        $validerinfos['communaute_id'] = Auth::user()->communaute_id;
+
+        // Reset specific conditional fields to null depending on selected member type to keep data clean
+        if ($request->input('type_membre') === 'adulte') {
+            $validerinfos['etablissement_scolaire'] = null;
+            $validerinfos['niveau_etudes'] = null;
+            $validerinfos['parent_tuteur_nom'] = null;
+            $validerinfos['parent_tuteur_telephone'] = null;
+            $validerinfos['date_naissance'] = null;
+        } elseif ($request->input('type_membre') === 'adolescent') {
+            $validerinfos['nin'] = null;
+            $validerinfos['profession'] = null;
+            $validerinfos['parent_tuteur_telephone'] = null;
+        } elseif ($request->input('type_membre') === 'enfant') {
+            $validerinfos['nin'] = null;
+            $validerinfos['profession'] = null;
+            $validerinfos['niveau_etudes'] = null;
+        }
+
+        $membre->update($validerinfos);
+
+        return redirect()->route('Toutmembre')->with('success', 'Membre modifié avec succès.');
     }
+
     public function destroy($id)
     {
         $membre = User::where('communaute_id', Auth::user()->communaute_id)->findOrFail($id);
         $membre->delete();
-        return redirect()->route('Toutmembre');
+        return redirect()->route('Toutmembre')->with('success', 'Membre supprimé avec succès.');
     }
 
     public function responsableMembres()
@@ -88,17 +145,9 @@ class MembreController extends Controller
     public function responsableStore(Request $request)
     {
         $user = Auth::user();
-        $validated = $request->validate([
-            'prenom' => 'required|string|max:255',
-            'nom' => 'required|string|max:100',
-            'email' => 'required|email|unique:users,email',
-            'adresse' => 'required|string|max:255',
-            'indicatif' => 'required|string',
-            'telephone' => 'required|string|max:255',
-            'password' => 'required|string|min:6',
-            'role' => 'required|string',
-            'cellule_id' => 'required|exists:cellules,id',
-        ]);
+        
+        $rules = $this->getValidationRules($request);
+        $validated = $request->validate($rules);
 
         if ($validated['cellule_id'] != $user->cellule_id) {
             abort(403);
@@ -108,10 +157,18 @@ class MembreController extends Controller
         $validerchamps['telephone'] = $request->indicatif . ' ' . $request->telephone;
         $validerchamps['communaute_id'] = $user->communaute_id;
         
-        User::create($validerchamps);
+        // Generate secure temporary password and invitation token
+        $validerchamps['password'] = Hash::make(Str::random(16));
+        $validerchamps['invitation_token'] = Str::random(60);
+        $validerchamps['cgu_accepted'] = false;
+
+        $membre = User::create($validerchamps);
+
+        $invitationLink = route('invitation.accept', ['token' => $membre->invitation_token]);
 
         return redirect()->route('responsable.membres')
-            ->with('success', 'Membre créé avec succès dans votre section');
+            ->with('success', 'Membre créé avec succès dans votre section.')
+            ->with('invitation_link', $invitationLink);
     }
 
     public function responsableEdit($id)
@@ -127,16 +184,8 @@ class MembreController extends Controller
         $user = Auth::user();
         $membre = User::where('cellule_id', $user->cellule_id)->findOrFail($id);
         
-        $validated = $request->validate([
-            'prenom' => 'required|string|max:255',
-            'nom' => 'required|string|max:100',
-            'email' => 'required|email|unique:users,email,'.$id,
-            'adresse' => 'required|string|max:255',
-            'indicatif' => 'required|string',
-            'telephone' => 'required|string|max:255',
-            'role' => 'required|string',
-            'cellule_id' => 'required|exists:cellules,id',
-        ]);
+        $rules = $this->getValidationRules($request, $id);
+        $validated = $request->validate($rules);
 
         if ($validated['cellule_id'] != $user->cellule_id) {
             abort(403);
@@ -146,18 +195,35 @@ class MembreController extends Controller
         $validerinfos['telephone'] = $request->indicatif . ' ' . $request->telephone;
         $validerinfos['communaute_id'] = $user->communaute_id;
 
+        // Reset specific conditional fields to null depending on selected member type to keep data clean
+        if ($request->input('type_membre') === 'adulte') {
+            $validerinfos['etablissement_scolaire'] = null;
+            $validerinfos['niveau_etudes'] = null;
+            $validerinfos['parent_tuteur_nom'] = null;
+            $validerinfos['parent_tuteur_telephone'] = null;
+            $validerinfos['date_naissance'] = null;
+        } elseif ($request->input('type_membre') === 'adolescent') {
+            $validerinfos['nin'] = null;
+            $validerinfos['profession'] = null;
+            $validerinfos['parent_tuteur_telephone'] = null;
+        } elseif ($request->input('type_membre') === 'enfant') {
+            $validerinfos['nin'] = null;
+            $validerinfos['profession'] = null;
+            $validerinfos['niveau_etudes'] = null;
+        }
+
         $membre->update($validerinfos);
 
-        return redirect()->route('responsable.membres')->with('success', 'Membre de votre section modifié avec succès');
+        return redirect()->route('responsable.membres')->with('success', 'Membre de votre section modifié avec succès.');
     }
 
     public function responsableDestroy($id)
-    {
+    {   
         $user = Auth::user();
         $membre = User::where('cellule_id', $user->cellule_id)->findOrFail($id);
         $membre->delete();
 
-        return redirect()->route('responsable.membres')->with('success', 'Membre supprimé avec succès');
+        return redirect()->route('responsable.membres')->with('success', 'Membre supprimé avec succès.');
     }
-
 }
+

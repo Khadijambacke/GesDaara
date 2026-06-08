@@ -29,7 +29,25 @@ class User extends Authenticatable
         'adresse',
         'photo',
         'communaute_id',
-        'cellule_id'
+        'cellule_id',
+        'type_membre',
+        'genre',
+        'nom_pere',
+        'nom_mere',
+        'nin',
+        'profession',
+        'etablissement_scolaire',
+        'niveau_etudes',
+        'parent_tuteur_nom',
+        'parent_tuteur_telephone',
+        'date_naissance',
+        'cgu_accepted',
+        'cgu_accepted_at',
+        'invitation_token',
+        'matricule',
+        'numero_identite',
+        'situation_matrimoniale',
+        'est_enfant'
     ];
     public function cellule()
     {
@@ -66,6 +84,10 @@ public function transactions()
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'date_naissance' => 'date',
+            'cgu_accepted_at' => 'datetime',
+            'cgu_accepted' => 'boolean',
+            'est_enfant' => 'boolean',
         ];
     }
 }
