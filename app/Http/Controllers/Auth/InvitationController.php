@@ -18,7 +18,7 @@ class InvitationController extends Controller
      */
     protected function getDefaultCharter()
     {
-        return "Règlement Intérieur et Charte Générale du Collectif :\n\n"
+      return "Règlement Intérieur et Charte Générale du Collectif :\n\n"
              . "1. Respect mutuel : Tous les membres s'engagent à entretenir des relations basées sur le respect, la fraternité et l'entraide.\n"
              . "2. Solidarité active : Participer activement, selon les capacités de chacun, aux projets, événements et cotisations collectives.\n"
              . "3. Transparence et intégrité : Veiller à la bonne gestion des ressources et à l'exactitude des informations transmises.\n"
@@ -53,6 +53,8 @@ class InvitationController extends Controller
     public function storeAccept(Request $request, $token)
     {
         $membre = User::where('invitation_token', $token)->first();
+        //invitaion unique par token
+        
 
         if (!$membre) {
             return redirect()->route('login')->withErrors(['email' => "Ce lien d'activation n'est plus valide ou est expiré."]);
@@ -63,6 +65,7 @@ class InvitationController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+       ///redefinition mot de passe par membre
         $membre->update([
             'password' => Hash::make($request->password),
             'cgu_accepted' => true,
@@ -108,12 +111,14 @@ class InvitationController extends Controller
             'nom' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email',
             'adresse' => 'required|string|max:255',
+            'situation_matrimoniale' => 'required|in:Célibataire,Marié(e),Divorcé(e),Veuf/Veuve',
             'indicatif' => 'required|string',
             'telephone' => 'required|string|max:255',
-            'type_membre' => 'required|in:adulte,adolescent,enfant',
+            'type_membre' => 'required|in:adulte,adolescent',
             'genre' => 'required|in:homme,femme',
-            'nom_pere' => 'nullable|string|max:255',
-            'nom_mere' => 'nullable|string|max:255',
+            'nom_pere' => 'required|string|max:255',
+            'nom_mere' => 'required|string|max:255',
+            'date_naissance' => 'required|date',
             'cgu_accepted' => 'required|accepted',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ];
@@ -123,15 +128,10 @@ class InvitationController extends Controller
             $rules['nin'] = 'required|string|max:255';
             $rules['profession'] = 'required|string|max:255';
         } elseif ($request->input('type_membre') === 'adolescent') {
-            $rules['etablissement_scolaire'] = 'required|string|max:255';
-            $rules['niveau_etudes'] = 'required|string|max:255';
-            $rules['parent_tuteur_nom'] = 'required|string|max:255';
-            $rules['date_naissance'] = 'required|date';
-        } elseif ($request->input('type_membre') === 'enfant') {
-            $rules['date_naissance'] = 'required|date';
-            $rules['parent_tuteur_nom'] = 'required|string|max:255';
+            $rules['niveau_etudes'] = 'required|string|max:255'; // Formation / Études
             $rules['parent_tuteur_telephone'] = 'required|string|max:255';
             $rules['etablissement_scolaire'] = 'nullable|string|max:255';
+            $rules['parent_tuteur_nom'] = 'nullable|string|max:255';
         }
 
         $validated = $request->validate($rules);

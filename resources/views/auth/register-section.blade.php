@@ -44,6 +44,7 @@
                         <option value="+221" {{ old('indicatif') == '+221' ? 'selected' : '' }}>+221 (SN)</option>
                         <option value="+33" {{ old('indicatif') == '+33' ? 'selected' : '' }}>+33 (FR)</option>
                         <option value="+1" {{ old('indicatif') == '+1' ? 'selected' : '' }}>+1 (US)</option>
+                        <option value="+225" {{ old('indicatif') == '+225' ? 'selected' : '' }}>+225 (CI)</option>
                     </select>
                     <input id="telephone" type="text" name="telephone" value="{{ old('telephone') }}" required class="flex-1 px-3 py-1.5 border border-cedar-200 rounded-xl text-sm focus:border-cedar-500 focus:ring focus:ring-cedar-200 focus:ring-opacity-50">
                 </div>
@@ -55,25 +56,47 @@
                 <input id="adresse" type="text" name="adresse" value="{{ old('adresse') }}" required class="w-full px-3 py-1.5 border border-cedar-200 rounded-xl text-sm focus:border-cedar-500 focus:ring focus:ring-cedar-200 focus:ring-opacity-50">
             </div>
 
-            <!-- Genre / Civilité -->
+            <!-- NIN (Identité) - Placé en haut, affiché/activé si Adulte -->
+            <div id="nin-container" class="mb-3">
+                <label for="nin" class="block text-xs font-semibold text-cedar-900 mb-1">Numéro d'Identité National (NIN)</label>
+                <input id="nin" type="text" name="nin" value="{{ old('nin') }}" class="w-full px-3 py-1.5 border border-cedar-200 rounded-xl text-sm focus:border-cedar-500 focus:ring focus:ring-cedar-200 focus:ring-opacity-50">
+            </div>
+
+            <!-- Date de naissance - Requis, placé en haut -->
+            <div class="mb-3">
+                <label for="date_naissance" class="block text-xs font-semibold text-cedar-900 mb-1">Date de Naissance</label>
+                <input id="date_naissance" type="date" name="date_naissance" value="{{ old('date_naissance') }}" required class="w-full px-3 py-1.5 border border-cedar-200 rounded-xl text-sm focus:border-cedar-500 focus:ring focus:ring-cedar-200 focus:ring-opacity-50">
+            </div>
+
+            <!-- Genre -->
             <div class="mb-3">
                 <label for="genre" class="block text-xs font-semibold text-cedar-900 mb-1">Genre</label>
-                <select id="genre" name="genre" required class="w-full px-3 py-1.5 border border-cedar-200 rounded-xl text-sm bg-white focus:border-cedar-500">
-                    <option value="" disabled selected>Choisir le genre</option>
-                    <option value="homme" {{ old('genre') == 'homme' ? 'selected' : '' }}>Homme / Garçon</option>
-                    <option value="femme" {{ old('genre') == 'femme' ? 'selected' : '' }}>Femme / Fille</option>
+                <select id="genre" name="genre" required class="w-full px-3 py-1.5 border border-cedar-200 rounded-xl text-sm bg-white focus:border-cedar-500 focus:ring focus:ring-cedar-200 focus:ring-opacity-50">
+                    <option value="homme" {{ old('genre') == 'homme' ? 'selected' : '' }}>Homme</option>
+                    <option value="femme" {{ old('genre') == 'femme' ? 'selected' : '' }}>Femme</option>
                 </select>
             </div>
 
-            <!-- Filiation (Optionnel) -->
+            <!-- Statut Matrimonial -->
+            <div class="mb-3">
+                <label for="situation_matrimoniale" class="block text-xs font-semibold text-cedar-900 mb-1">Statut Matrimonial</label>
+                <select id="situation_matrimoniale" name="situation_matrimoniale" required class="w-full px-3 py-1.5 border border-cedar-200 rounded-xl text-sm bg-white focus:border-cedar-500 focus:ring focus:ring-cedar-200 focus:ring-opacity-50">
+                    <option value="Célibataire" {{ old('situation_matrimoniale') == 'Célibataire' ? 'selected' : '' }}>Célibataire</option>
+                    <option value="Marié(e)" {{ old('situation_matrimoniale') == 'Marié(e)' ? 'selected' : '' }}>Marié(e)</option>
+                    <option value="Divorcé(e)" {{ old('situation_matrimoniale') == 'Divorcé(e)' ? 'selected' : '' }}>Divorcé(e)</option>
+                    <option value="Veuf/Veuve" {{ old('situation_matrimoniale') == 'Veuf/Veuve' ? 'selected' : '' }}>Veuf/Veuve</option>
+                </select>
+            </div>
+
+            <!-- Filiation -->
             <div class="grid grid-cols-2 gap-2 mb-3">
                 <div>
                     <label for="nom_pere" class="block text-xs font-semibold text-cedar-900 mb-1">Prénom du Père</label>
-                    <input id="nom_pere" type="text" name="nom_pere" value="{{ old('nom_pere') }}" class="w-full px-3 py-1.5 border border-cedar-200 rounded-xl text-sm focus:border-cedar-500">
+                    <input id="nom_pere" type="text" name="nom_pere" value="{{ old('nom_pere') }}" required class="w-full px-3 py-1.5 border border-cedar-200 rounded-xl text-sm focus:border-cedar-500">
                 </div>
                 <div>
                     <label for="nom_mere" class="block text-xs font-semibold text-cedar-900 mb-1">Prénom/Nom de la Mère</label>
-                    <input id="nom_mere" type="text" name="nom_mere" value="{{ old('nom_mere') }}" class="w-full px-3 py-1.5 border border-cedar-200 rounded-xl text-sm focus:border-cedar-500">
+                    <input id="nom_mere" type="text" name="nom_mere" value="{{ old('nom_mere') }}" required class="w-full px-3 py-1.5 border border-cedar-200 rounded-xl text-sm focus:border-cedar-500">
                 </div>
             </div>
 
@@ -83,17 +106,12 @@
                 <select id="type_membre" name="type_membre" required class="w-full px-3 py-1.5 border border-cedar-200 rounded-xl text-sm bg-white focus:border-cedar-500">
                     <option value="adulte" {{ old('type_membre') == 'adulte' ? 'selected' : '' }}>Adulte</option>
                     <option value="adolescent" {{ old('type_membre') == 'adolescent' ? 'selected' : '' }}>Adolescent</option>
-                    <option value="enfant" {{ old('type_membre') == 'enfant' ? 'selected' : '' }}>Enfant</option>
                 </select>
             </div>
 
             <!-- SECTION : ADULTE -->
             <div id="fields-adulte" class="mb-4 p-3 bg-gray-50 rounded-2xl border border-gray-200" style="display: none;">
                 <h4 class="text-xs font-bold text-gray-700 mb-2">Informations Adulte</h4>
-                <div class="mb-3">
-                    <label for="nin" class="block text-xs font-semibold text-gray-750 mb-1">Numéro d'Identité National (NIN)</label>
-                    <input id="nin" type="text" name="nin" value="{{ old('nin') }}" class="w-full px-3 py-1.5 border border-gray-300 rounded-xl text-sm focus:border-cedar-500">
-                </div>
                 <div>
                     <label for="profession" class="block text-xs font-semibold text-gray-750 mb-1">Profession</label>
                     <input id="profession" type="text" name="profession" value="{{ old('profession') }}" class="w-full px-3 py-1.5 border border-gray-300 rounded-xl text-sm focus:border-cedar-500">
@@ -104,41 +122,12 @@
             <div id="fields-adolescent" class="mb-4 p-3 bg-gray-50 rounded-2xl border border-gray-200" style="display: none;">
                 <h4 class="text-xs font-bold text-gray-700 mb-2">Informations Adolescent</h4>
                 <div class="mb-3">
-                    <label for="date_naissance_ado" class="block text-xs font-semibold text-gray-750 mb-1">Date de Naissance</label>
-                    <input id="date_naissance_ado" type="date" name="date_naissance" value="{{ old('date_naissance') }}" class="w-full px-3 py-1.5 border border-gray-300 rounded-xl text-sm focus:border-cedar-500">
-                </div>
-                <div class="mb-3">
-                    <label for="etablissement_scolaire_ado" class="block text-xs font-semibold text-gray-750 mb-1">Établissement Scolaire</label>
-                    <input id="etablissement_scolaire_ado" type="text" name="etablissement_scolaire" value="{{ old('etablissement_scolaire') }}" class="w-full px-3 py-1.5 border border-gray-300 rounded-xl text-sm focus:border-cedar-500">
-                </div>
-                <div class="mb-3">
-                    <label for="niveau_etudes" class="block text-xs font-semibold text-gray-750 mb-1">Niveau d'Études</label>
+                    <label for="niveau_etudes" class="block text-xs font-semibold text-gray-750 mb-1">Formation / Études</label>
                     <input id="niveau_etudes" type="text" name="niveau_etudes" value="{{ old('niveau_etudes') }}" class="w-full px-3 py-1.5 border border-gray-300 rounded-xl text-sm focus:border-cedar-500">
                 </div>
                 <div>
-                    <label for="parent_tuteur_nom_ado" class="block text-xs font-semibold text-gray-750 mb-1">Nom du Parent / Tuteur</label>
-                    <input id="parent_tuteur_nom_ado" type="text" name="parent_tuteur_nom" value="{{ old('parent_tuteur_nom') }}" class="w-full px-3 py-1.5 border border-gray-300 rounded-xl text-sm focus:border-cedar-500">
-                </div>
-            </div>
-
-            <!-- SECTION : ENFANT -->
-            <div id="fields-enfant" class="mb-4 p-3 bg-gray-50 rounded-2xl border border-gray-200" style="display: none;">
-                <h4 class="text-xs font-bold text-gray-700 mb-2">Informations Enfant</h4>
-                <div class="mb-3">
-                    <label for="date_naissance_enf" class="block text-xs font-semibold text-gray-750 mb-1">Date de Naissance</label>
-                    <input id="date_naissance_enf" type="date" name="date_naissance" value="{{ old('date_naissance') }}" class="w-full px-3 py-1.5 border border-gray-300 rounded-xl text-sm focus:border-cedar-500">
-                </div>
-                <div class="mb-3">
-                    <label for="parent_tuteur_nom_enf" class="block text-xs font-semibold text-gray-750 mb-1">Nom du Parent / Tuteur</label>
-                    <input id="parent_tuteur_nom_enf" type="text" name="parent_tuteur_nom" value="{{ old('parent_tuteur_nom') }}" class="w-full px-3 py-1.5 border border-gray-300 rounded-xl text-sm focus:border-cedar-500">
-                </div>
-                <div class="mb-3">
-                    <label for="parent_tuteur_telephone" class="block text-xs font-semibold text-gray-750 mb-1">Téléphone du Parent / Tuteur</label>
-                    <input id="parent_tuteur_telephone" type="text" name="parent_tuteur_telephone" value="{{ old('parent_tuteur_telephone') }}" class="w-full px-3 py-1.5 border border-gray-300 rounded-xl text-sm focus:border-cedar-500">
-                </div>
-                <div>
-                    <label for="etablissement_scolaire_enf" class="block text-xs font-semibold text-gray-750 mb-1">Établissement Scolaire (Optionnel)</label>
-                    <input id="etablissement_scolaire_enf" type="text" name="etablissement_scolaire" value="{{ old('etablissement_scolaire') }}" class="w-full px-3 py-1.5 border border-gray-300 rounded-xl text-sm focus:border-cedar-500">
+                    <label for="parent_tuteur_telephone" class="block text-xs font-semibold text-gray-750 mb-1">Numéro du Parent / Tuteur</label>
+                    <input id="parent_tuteur_telephone" type="text" name="parent_tuteur_telephone" value="{{ old('parent_tuteur_telephone') }}" placeholder="77 000 00 00" class="w-full px-3 py-1.5 border border-gray-300 rounded-xl text-sm focus:border-cedar-500">
                 </div>
             </div>
 
@@ -183,29 +172,35 @@
             const typeSelect = document.getElementById('type_membre');
             const fieldsAdulte = document.getElementById('fields-adulte');
             const fieldsAdolescent = document.getElementById('fields-adolescent');
-            const fieldsEnfant = document.getElementById('fields-enfant');
+            const ninContainer = document.getElementById('nin-container');
+            const ninInput = document.getElementById('nin');
 
             function toggleFields() {
                 const val = typeSelect.value;
                 // Hide all
                 fieldsAdulte.style.display = 'none';
                 fieldsAdolescent.style.display = 'none';
-                fieldsEnfant.style.display = 'none';
 
                 // Disable all inputs inside hidden blocks to prevent validation errors on submission
                 fieldsAdulte.querySelectorAll('input, select').forEach(el => el.disabled = true);
                 fieldsAdolescent.querySelectorAll('input, select').forEach(el => el.disabled = true);
-                fieldsEnfant.querySelectorAll('input, select').forEach(el => el.disabled = true);
 
                 if (val === 'adulte') {
                     fieldsAdulte.style.display = 'block';
                     fieldsAdulte.querySelectorAll('input, select').forEach(el => el.disabled = false);
+                    
+                    // Show & enable NIN
+                    ninContainer.style.display = 'block';
+                    ninInput.disabled = false;
+                    ninInput.required = true;
                 } else if (val === 'adolescent') {
                     fieldsAdolescent.style.display = 'block';
                     fieldsAdolescent.querySelectorAll('input, select').forEach(el => el.disabled = false);
-                } else if (val === 'enfant') {
-                    fieldsEnfant.style.display = 'block';
-                    fieldsEnfant.querySelectorAll('input, select').forEach(el => el.disabled = false);
+                    
+                    // Hide & disable NIN
+                    ninContainer.style.display = 'none';
+                    ninInput.disabled = true;
+                    ninInput.required = false;
                 }
             }
 

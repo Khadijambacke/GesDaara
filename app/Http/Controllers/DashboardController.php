@@ -43,18 +43,39 @@ class DashboardController extends Controller
                 'totalCotise'
             ));
         } else {
-            // Member dashboard – provide recent events and member's cotisations
-            $evenementsActifs = Evenement::where('communaute_id', $user->communaute_id)
-                ->where('datedebut', '>=', now())
+   
+            $evenementsCommunaute = Evenement::with('participationsRelation')
+                ->where('communaute_id', $user->communaute_id)
+                ->whereNull('cellule_id')
+                ->orderBy('datedebut', 'asc')
+                ->get();
+
+            $evenementsSection = Evenement::with('participationsRelation')
+                ->where('cellule_id', $user->cellule_id)
+                ->orderBy('datedebut', 'asc')
+                ->get();
+
+            $evenementsActifs = Evenement::with('participationsRelation')
+                ->where('communaute_id', $user->communaute_id)
+                ->where(function($query) use ($user) {
+                    $query->whereNull('cellule_id')
+                          ->orWhere('cellule_id', $user->cellule_id);
+                })
+                ->where('statut', '!=', 'termine')
                 ->orderBy('datedebut', 'asc')
                 ->get();
             $cotisations = Cotisation::where('membre_id', $user->id)
+                ->with('evenement')
                 ->orderBy('created_at', 'desc')
-                ->take(5)
                 ->get();
-            // Alias for view consistency
-            $dernieresCotisations = $cotisations;
-            return view('Dashboard.dashboardmembre', compact('evenementsActifs', 'cotisations', 'dernieresCotisations'));
+            $dernieresCotisations = $cotisations->take(5);
+            return view('Dashboard.dashboardmembre', compact(
+                'evenementsCommunaute', 
+                'evenementsSection', 
+                'evenementsActifs', 
+                'cotisations', 
+                'dernieresCotisations'
+            ));
         }
     }
 }

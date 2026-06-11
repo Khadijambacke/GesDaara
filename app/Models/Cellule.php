@@ -33,5 +33,19 @@ class Cellule extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function evenements()
+    {
+        return $this->hasMany(Evenement::class, 'cellule_id');
+    }
     
+    public function getRegistrationTokenAttribute($value)
+    {
+        if (empty($value)) {
+            $token = \Illuminate\Support\Str::random(32);
+            $this->attributes['registration_token'] = $token;
+            return $token;
+        }
+        return $value;
+    }
 }

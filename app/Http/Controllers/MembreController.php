@@ -36,29 +36,26 @@ class MembreController extends Controller
             'nom' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email' . ($id ? ",{$id}" : ''),
             'adresse' => 'required|string|max:255',
+            'situation_matrimoniale' => 'required|in:Célibataire,Marié(e),Divorcé(e),Veuf/Veuve',
             'indicatif' => 'required|string',
             'telephone' => 'required|string|max:255',
             'role' => 'required|string',
             'cellule_id' => 'required|exists:cellules,id',
-            'type_membre' => 'required|in:adulte,adolescent,enfant',
+            'type_membre' => 'required|in:adulte,adolescent',
             'genre' => 'required|in:homme,femme',
-            'nom_pere' => 'nullable|string|max:255',
-            'nom_mere' => 'nullable|string|max:255',
+            'nom_pere' => 'required|string|max:255',
+            'nom_mere' => 'required|string|max:255',
+            'date_naissance' => 'required|date',
         ];
 
         if ($request->input('type_membre') === 'adulte') {
             $rules['nin'] = 'required|string|max:255';
             $rules['profession'] = 'required|string|max:255';
         } elseif ($request->input('type_membre') === 'adolescent') {
-            $rules['etablissement_scolaire'] = 'required|string|max:255';
-            $rules['niveau_etudes'] = 'required|string|max:255';
-            $rules['parent_tuteur_nom'] = 'required|string|max:255';
-            $rules['date_naissance'] = 'required|date';
-        } elseif ($request->input('type_membre') === 'enfant') {
-            $rules['date_naissance'] = 'required|date';
-            $rules['parent_tuteur_nom'] = 'required|string|max:255';
+            $rules['niveau_etudes'] = 'required|string|max:255'; // Formation / Études
             $rules['parent_tuteur_telephone'] = 'required|string|max:255';
             $rules['etablissement_scolaire'] = 'nullable|string|max:255';
+            $rules['parent_tuteur_nom'] = 'nullable|string|max:255';
         }
 
         return $rules;
@@ -111,15 +108,9 @@ class MembreController extends Controller
             $validerinfos['niveau_etudes'] = null;
             $validerinfos['parent_tuteur_nom'] = null;
             $validerinfos['parent_tuteur_telephone'] = null;
-            $validerinfos['date_naissance'] = null;
         } elseif ($request->input('type_membre') === 'adolescent') {
             $validerinfos['nin'] = null;
             $validerinfos['profession'] = null;
-            $validerinfos['parent_tuteur_telephone'] = null;
-        } elseif ($request->input('type_membre') === 'enfant') {
-            $validerinfos['nin'] = null;
-            $validerinfos['profession'] = null;
-            $validerinfos['niveau_etudes'] = null;
         }
 
         $membre->update($validerinfos);
@@ -201,15 +192,9 @@ class MembreController extends Controller
             $validerinfos['niveau_etudes'] = null;
             $validerinfos['parent_tuteur_nom'] = null;
             $validerinfos['parent_tuteur_telephone'] = null;
-            $validerinfos['date_naissance'] = null;
         } elseif ($request->input('type_membre') === 'adolescent') {
             $validerinfos['nin'] = null;
             $validerinfos['profession'] = null;
-            $validerinfos['parent_tuteur_telephone'] = null;
-        } elseif ($request->input('type_membre') === 'enfant') {
-            $validerinfos['nin'] = null;
-            $validerinfos['profession'] = null;
-            $validerinfos['niveau_etudes'] = null;
         }
 
         $membre->update($validerinfos);

@@ -9,11 +9,19 @@ use App\Http\Controllers\MembreController;
 use App\Http\Controllers\CelluleController;
 use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\CotisationController;
+use App\Http\Controllers\CompteController;
+
+use App\Http\Controllers\Auth\InvitationController;
 use Inertia\Inertia;
 
 Route::get('/', [DashboardController::class, 'index'])
     ->middleware('auth')
     ->name('dashboard');
+    // Routes d'événements accessibles par tout le monde
+    Route::middleware(['auth', 'role:admin,owner,responsable,responsble,membre'])->group(function () {
+        Route::get('/dashboard/evenements', [EvenementController::class, 'index'])->name('Toutevenement');
+        Route::get('/dashboard/evenements/{id}', [EvenementController::class, 'show'])->name('showevent');
+    });
 
     ////////////adminpanel///
     Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -32,10 +40,9 @@ Route::get('/', [DashboardController::class, 'index'])
     });
 
     // Routes partagées pour admin et responsable
-    Route::middleware(['auth', 'role:admin,responsable,responsble'])->group(function () {
-        Route::get('/dashboard/evenements', [EvenementController::class, 'index'])->name('Toutevenement');
-        Route::get('/dashboard/evenements/{id}', [EvenementController::class, 'show'])->name('showevent');
+    Route::middleware(['auth', 'role:admin,owner,responsable,responsble'])->group(function () {
         Route::post('/dashboard/cotisations/store', [CotisationController::class, 'store'])->name('storecotisation');
+       
         
         // Création, modification et suppression d'événements
         Route::post('/dashboard/evenements/store', [EvenementController::class, 'store'])->name('storeevent');  
@@ -53,17 +60,19 @@ Route::get('/', [DashboardController::class, 'index'])
         Route::delete('/dashboard/responsable/membres/delete/{id}', [MembreController::class, 'responsableDestroy'])->name('responsable.deletemembre');
     });
 
-use App\Http\Controllers\Auth\InvitationController;
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/dashboard/membre/cotisations/store', [CotisationController::class, 'membreStore'])->name('membre.cotisations.store');
+    Route::post('/dashboard/participations/store', [CotisationController::class, 'storeParticipation'])->name('membre.participations.store');
 });
 
 // Routes publiques pour l'activation d'invitation et acceptation de la charte (individuelle)
 Route::get('/invitation/accepter/{token}', [InvitationController::class, 'accept'])->name('invitation.accept');
 Route::post('/invitation/accepter/{token}', [InvitationController::class, 'storeAccept'])->name('invitation.store');
+Route::post('/compteUsers',[CompteController::class,'CompteBnacaire'])->name('compte.store');
 
 // Routes publiques pour l'auto-inscription globale par section/cellule
 Route::get('/rejoindre/section/{cellule_token}', [InvitationController::class, 'registerSection'])->name('section.register');

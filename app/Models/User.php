@@ -13,6 +13,29 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($user) {
+            if (empty($user->matricule)) {
+                $year = date('Y');
+                do {
+                    $random = str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+                    $matricule = "SD-{$year}-{$random}";
+                } while (self::where('matricule', $matricule)->exists());
+                $user->matricule = $matricule;
+            }
+        });
+
+        static::created(function ($user) {
+            $user->compte()->create([
+                'numerocompte' => 'CPTE-' . strtoupper(bin2hex(random_bytes(4))),
+                'montant_total' => 0.00,
+                'montantotalsas' => 0.00,
+            ]);
+        });
+    }
+
     /**
      * The attributes that are mass assignable.
      *
@@ -21,8 +44,10 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'nom',
+        'Nom',
         'email',
         'prenom',
+        'Prenom',
         'telephone',
         'password',
         'role',
@@ -54,6 +79,11 @@ class User extends Authenticatable
         return $this->belongsTo(Cellule::class, 'cellule_id');
     }
     
+    public function communaute()
+    {
+        return $this->belongsTo(Communaute::class, 'communaute_id');
+    }
+    
     public function getNameAttribute()
     {
         return ($this->Prenom ?? $this->prenom) . ' ' . ($this->Nom ?? $this->nom);
@@ -61,6 +91,16 @@ class User extends Authenticatable
 public function transactions()
 {
     return $this->hasMany(Transaction::class);
+}
+
+public function compte()
+{
+    return $this->hasOne(Compte::class, 'user_id');
+}
+
+public function participations()
+{
+    return $this->hasMany(Participation::class, 'user_id');
 }
 
 

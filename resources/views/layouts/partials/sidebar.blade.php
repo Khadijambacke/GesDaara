@@ -193,17 +193,17 @@
         <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/10">
 
             <div class="w-10 h-10 rounded-xl overflow-hidden bg-cedar-400 p-0.5">
-                <img src="https://ui-avatars.com/api/?name=Khadija+Mbacke&background=f5ebdf&color=3c1f19"
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->prenom . ' ' . Auth::user()->nom) }}&background=f5ebdf&color=3c1f19"
                      alt="User">
             </div>
 
             <div class="flex-1 min-w-0">
                 <p class="text-xs font-bold truncate">
-                    K. Mbacké
+                    {{ Auth::user()->prenom }} {{ Auth::user()->nom }}
                 </p>
 
                 <p class="text-[10px] text-cedar-400 truncate uppercase tracking-tighter">
-                    Administrateur
+                    {{ Auth::user()->role === 'admin' ? 'Administrateur' : (in_array(Auth::user()->role, ['responsable', 'responsble']) ? 'Responsable' : 'Membre') }}
                 </p>
             </div>
 

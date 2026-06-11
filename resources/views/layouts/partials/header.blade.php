@@ -23,9 +23,14 @@
         <!-- Title -->
         <div>
             <h2 class="text-2xl font-extrabold text-cedar-950 tracking-tight">
-                Espace Administrateur
+                @if(Auth::user()->role === 'admin')
+                    Espace Administrateur
+                @elseif(in_array(Auth::user()->role, ['responsable', 'responsble']))
+                    Espace Responsable
+                @else
+                    Espace Membre
+                @endif
             </h2>
-
         </div>
     </div>
 
@@ -77,17 +82,17 @@
             <div class="hidden md:block text-right">
 
                 <p class="text-xs font-bold text-cedar-950">
-                    Khadija Mbacké
+                    {{ Auth::user()->prenom }} {{ Auth::user()->nom }}
                 </p>
 
                 <p class="text-[10px] uppercase tracking-widest text-cedar-400 font-bold">
-                    Administrateur
+                    {{ Auth::user()->role === 'admin' ? 'Administrateur' : (in_array(Auth::user()->role, ['responsable', 'responsble']) ? 'Responsable' : 'Membre') }}
                 </p>
             </div>
 
             <div class="w-11 h-11 rounded-2xl overflow-hidden border-2 border-cedar-100">
 
-                <img src="https://ui-avatars.com/api/?name=Khadija+Mbacke&background=f5ebdf&color=3c1f19"
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->prenom . ' ' . Auth::user()->nom) }}&background=f5ebdf&color=3c1f19"
                      alt="Profile"
                      class="w-full h-full object-cover">
             </div>
