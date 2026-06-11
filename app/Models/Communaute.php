@@ -11,7 +11,8 @@ class Communaute extends Model
     protected $fillable = [
         'numerocommu',
         'nom',
-        'description'
+        'description',
+        'charte'
     ];
     public function Cellules()
     {

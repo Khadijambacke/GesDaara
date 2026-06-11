@@ -26,14 +26,14 @@
 </div>
 
 <!-- Success Message -->
-@if(session('success'))
+{{-- @if(session('success'))
 <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-800 rounded-2xl text-sm font-bold flex items-center gap-3">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" viewBox="0 0 20 20" fill="currentColor">
         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
     </svg>
     {{ session('success') }}
 </div>
-@endif
+@endif --}}
 
 <!-- Events Cards Grid -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -41,7 +41,7 @@
         @php
             $percentage = $event->objectifmontant > 0 ? min(100, round(($event->montantotalparticipe / $event->objectifmontant) * 100)) : 0;
             
-            // Statut styling
+            // verifications de la statut de l'evenemnt
             $statusClass = 'bg-cedar-100 text-cedar-800 border-cedar-200';
             $statusText = 'Planifié';
             if (trim($event->statut) === 'En_cours') {

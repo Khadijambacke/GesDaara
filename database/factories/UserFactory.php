@@ -25,11 +25,22 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'Nom' => fake()->lastName(),
+            'Prenom' => fake()->firstName() . ' ' . Str::random(5),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'telephone' => '77' . rand(1000000, 9999999),
+            'adresse' => fake()->address(),
+            'role' => 'membre',
+            'communaute_id' => function() {
+                return \App\Models\Communaute::first()?->id ?? \App\Models\Communaute::create([
+                    'numerocommu' => rand(1000, 9999),
+                    'nom' => 'Default Communaute',
+                    'description' => 'Default Description',
+                ])->id;
+            },
         ];
     }
 

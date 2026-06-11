@@ -18,6 +18,7 @@
         </svg>
         Retour
     </a>
+    
 </div>
 
 <!-- Form Card -->
@@ -48,6 +49,44 @@
                 <input type="text" name="nom" value="{{ old('nom', $membre->nom ?? $membre->Nom ?? $membre->name) }}" required
                        class="w-full bg-cedar-50 border border-cedar-200 rounded-xl px-4 py-3 text-sm font-bold text-cedar-900 outline-none focus:ring-2 focus:ring-cedar-300 transition-all">
                 @error('nom') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            <!-- NIN (Identité) - Placé en haut, affiché dynamiquement si Adulte -->
+            <div id="edit-nin-container" class="md:col-span-2">
+                <label class="block text-xs font-black text-cedar-950 uppercase tracking-widest mb-2">NIN (Numéro d'Identité National)</label>
+                <input type="text" name="nin" id="edit_nin" value="{{ old('nin', $membre->nin) }}"
+                       class="w-full bg-cedar-50 border border-cedar-200 rounded-xl px-4 py-3 text-sm font-bold text-cedar-900 outline-none focus:ring-2 focus:ring-cedar-300 transition-all">
+                @error('nin') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            <!-- Date de naissance - Placé en haut, requis pour tous -->
+            <div class="md:col-span-2">
+                <label class="block text-xs font-black text-cedar-950 uppercase tracking-widest mb-2">Date de Naissance</label>
+                <input type="date" name="date_naissance" value="{{ old('date_naissance', $membre->date_naissance ? $membre->date_naissance->format('Y-m-d') : '') }}" required
+                       class="w-full bg-cedar-50 border border-cedar-200 rounded-xl px-4 py-3 text-sm font-bold text-cedar-900 outline-none focus:ring-2 focus:ring-cedar-300 transition-all">
+                @error('date_naissance') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            <!-- Genre -->
+            <div>
+                <label class="block text-xs font-black text-cedar-950 uppercase tracking-widest mb-2">Genre</label>
+                <select name="genre" required class="w-full bg-cedar-50 border border-cedar-200 rounded-xl px-4 py-3 text-sm font-bold text-cedar-900 outline-none focus:ring-2 focus:ring-cedar-300 transition-all cursor-pointer">
+                    <option value="homme" {{ old('genre', $membre->genre) == 'homme' ? 'selected' : '' }}>Homme</option>
+                    <option value="femme" {{ old('genre', $membre->genre) == 'femme' ? 'selected' : '' }}>Femme</option>
+                </select>
+                @error('genre') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            <!-- Statut Matrimonial -->
+            <div>
+                <label class="block text-xs font-black text-cedar-950 uppercase tracking-widest mb-2">Statut Matrimonial</label>
+                <select name="situation_matrimoniale" required class="w-full bg-cedar-50 border border-cedar-200 rounded-xl px-4 py-3 text-sm font-bold text-cedar-900 outline-none focus:ring-2 focus:ring-cedar-300 transition-all cursor-pointer">
+                    <option value="Célibataire" {{ old('situation_matrimoniale', $membre->situation_matrimoniale) == 'Célibataire' ? 'selected' : '' }}>Célibataire</option>
+                    <option value="Marié(e)" {{ old('situation_matrimoniale', $membre->situation_matrimoniale) == 'Marié(e)' ? 'selected' : '' }}>Marié(e)</option>
+                    <option value="Divorcé(e)" {{ old('situation_matrimoniale', $membre->situation_matrimoniale) == 'Divorcé(e)' ? 'selected' : '' }}>Divorcé(e)</option>
+                    <option value="Veuf/Veuve" {{ old('situation_matrimoniale', $membre->situation_matrimoniale) == 'Veuf/Veuve' ? 'selected' : '' }}>Veuf/Veuve</option>
+                </select>
+                @error('situation_matrimoniale') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
             <!-- Email -->
@@ -124,6 +163,55 @@
                 @error('role') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
+            <!-- Prénom du Père -->
+            <div>
+                <label class="block text-xs font-black text-cedar-950 uppercase tracking-widest mb-2">Prénom du Père</label>
+                <input type="text" name="nom_pere" value="{{ old('nom_pere', $membre->nom_pere) }}" required
+                       class="w-full bg-cedar-50 border border-cedar-200 rounded-xl px-4 py-3 text-sm font-bold text-cedar-900 outline-none focus:ring-2 focus:ring-cedar-300 transition-all">
+                @error('nom_pere') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            <!-- Prénom/Nom de la Mère -->
+            <div class="md:col-span-2">
+                <label class="block text-xs font-black text-cedar-950 uppercase tracking-widest mb-2">Prénom/Nom de la Mère</label>
+                <input type="text" name="nom_mere" value="{{ old('nom_mere', $membre->nom_mere) }}" required
+                       class="w-full bg-cedar-50 border border-cedar-200 rounded-xl px-4 py-3 text-sm font-bold text-cedar-900 outline-none focus:ring-2 focus:ring-cedar-300 transition-all">
+                @error('nom_mere') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            <!-- Catégorie de membre -->
+            <div class="md:col-span-2">
+                <label class="block text-xs font-black text-cedar-950 uppercase tracking-widest mb-2">Catégorie d'Âge</label>
+                <select id="edit_type_membre" name="type_membre" required class="w-full bg-cedar-50 border border-cedar-200 rounded-xl px-4 py-3 text-sm font-bold text-cedar-900 outline-none focus:ring-2 focus:ring-cedar-300 transition-all cursor-pointer">
+                    <option value="adulte" {{ old('type_membre', $membre->type_membre) == 'adulte' ? 'selected' : '' }}>Adulte</option>
+                    <option value="adolescent" {{ old('type_membre', $membre->type_membre) == 'adolescent' ? 'selected' : '' }}>Adolescent</option>
+                </select>
+                @error('type_membre') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            <!-- SECTION : ADULTE -->
+            <div id="edit-fields-adulte" class="md:col-span-2 bg-gray-50 border border-gray-150 rounded-2xl p-4 grid grid-cols-1 md:grid-cols-2 gap-4" style="display: none;">
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-black text-gray-700 uppercase tracking-widest mb-2">Profession</label>
+                    <input type="text" name="profession" value="{{ old('profession', $membre->profession) }}" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-950 outline-none focus:ring-2 focus:ring-cedar-300">
+                    @error('profession') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+            </div>
+
+            <!-- SECTION : ADOLESCENT -->
+            <div id="edit-fields-adolescent" class="md:col-span-2 bg-gray-50 border border-gray-150 rounded-2xl p-4 grid grid-cols-1 md:grid-cols-2 gap-4" style="display: none;">
+                <div>
+                    <label class="block text-xs font-black text-gray-700 uppercase tracking-widest mb-2">Formation / Études</label>
+                    <input type="text" name="niveau_etudes" value="{{ old('niveau_etudes', $membre->niveau_etudes) }}" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-950 outline-none focus:ring-2 focus:ring-cedar-300">
+                    @error('niveau_etudes') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="block text-xs font-black text-gray-700 uppercase tracking-widest mb-2">Numéro du Parent / Tuteur</label>
+                    <input type="text" name="parent_tuteur_telephone" value="{{ old('parent_tuteur_telephone', $membre->parent_tuteur_telephone) }}" placeholder="77 000 00 00" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-950 outline-none focus:ring-2 focus:ring-cedar-300">
+                    @error('parent_tuteur_telephone') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+            </div>
+
         </div>
 
         <div class="mt-8 flex justify-end">
@@ -133,4 +221,48 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.getElementById('edit_type_membre');
+        const fieldsAdulte = document.getElementById('edit-fields-adulte');
+        const fieldsAdolescent = document.getElementById('edit-fields-adolescent');
+        const ninContainer = document.getElementById('edit-nin-container');
+        const ninInput = document.getElementById('edit_nin');
+
+        function toggleFields() {
+            const val = typeSelect.value;
+            // Hide all specific blocks
+            fieldsAdulte.style.display = 'none';
+            fieldsAdolescent.style.display = 'none';
+
+            // Disable all inputs inside hidden blocks to prevent validation errors on submission
+            fieldsAdulte.querySelectorAll('input, select').forEach(el => el.disabled = true);
+            fieldsAdolescent.querySelectorAll('input, select').forEach(el => el.disabled = true);
+
+            if (val === 'adulte') {
+                fieldsAdulte.style.display = 'grid';
+                fieldsAdulte.querySelectorAll('input, select').forEach(el => el.disabled = false);
+                
+                // Show and enable NIN
+                ninContainer.style.display = 'block';
+                ninInput.disabled = false;
+                ninInput.required = true;
+            } else if (val === 'adolescent') {
+                fieldsAdolescent.style.display = 'grid';
+                fieldsAdolescent.querySelectorAll('input, select').forEach(el => el.disabled = false);
+                
+                // Hide and disable NIN
+                ninContainer.style.display = 'none';
+                ninInput.disabled = true;
+                ninInput.required = false;
+            }
+        }
+
+        if (typeSelect) {
+            typeSelect.addEventListener('change', toggleFields);
+            toggleFields();
+        }
+    });
+</script>
 @endsection

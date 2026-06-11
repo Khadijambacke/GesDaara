@@ -28,6 +28,8 @@ class RoleMiddleware
                 $normalizedRoles[] = 'responsble';
             } elseif ($role === 'responsble') {
                 $normalizedRoles[] = 'responsable';
+            } elseif ($role === 'admin') {
+                $normalizedRoles[] = 'owner';
             }
         }
 

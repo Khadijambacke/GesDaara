@@ -132,6 +132,13 @@
                     <td class="px-6 py-5">
                         <div class="flex items-center justify-center gap-2">
 
+                            <!-- Copy self-registration link -->
+                            <button onclick="navigator.clipboard.writeText('{{ route('section.register', ['cellule_token' => $cellule->registration_token]) }}'); alert('Lien d\'auto-inscription pour {{ addslashes($cellule->nomsection) }} copié dans le presse-papiers !');" class="w-9 h-9 rounded-xl bg-emerald-50 hover:bg-emerald-100 flex items-center justify-center transition-all shadow-sm" title="Copier le lien d'auto-inscription">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                </svg>
+                            </button>
+
                             <!-- Edit -->
                             <a href="{{ route('editcellule', $cellule->id) }}" class="w-9 h-9 rounded-xl bg-blue-50 hover:bg-blue-100 flex items-center justify-center transition-all shadow-sm" title="Modifier">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">

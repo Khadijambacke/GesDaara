@@ -64,7 +64,7 @@ class RegisteredUserController extends Controller
                 'email' => $request->email,
                 'telephone' => $request->telephone,
                 'adresse' => $request->adresse,
-                'role' => 'admin', // Le premier inscrit devient l'administrateur
+                'role' => 'owner', // Le premier inscrit devient le propriétaire (owner)
                 'communaute_id' => $communaute->id,
                 'cellule_id' => null, // Pas encore de cellule
                 'password' => Hash::make($request->password),
