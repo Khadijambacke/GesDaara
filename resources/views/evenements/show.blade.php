@@ -152,12 +152,36 @@
 {{-- ADMIN / OWNER VIEW: Cotisations par Section  --}}
 {{-- ============================================ --}}
 @isset($cotisationsParSection)
+<<<<<<< HEAD
 <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5 overflow-hidden">
     <div class="p-5 md:p-8 border-b border-cedar-100">
+=======
+<div class="bg-white rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5 overflow-hidden">
+    <div class="p-8 border-b border-cedar-100">
+>>>>>>> origin/master
         <h2 class="text-xl font-black text-cedar-950">Cotisations par Section</h2>
         <p class="text-xs text-cedar-500 mt-1">Vue d'ensemble des contributions groupées par section/cellule.</p>
     </div>
     <div class="overflow-x-auto">
+<<<<<<< HEAD
+        <table class="w-full text-left">
+            <thead class="bg-cedar-50 border-b border-cedar-100">
+                <tr class="text-[10px] uppercase tracking-[0.2em] text-cedar-500 font-black">
+                    <th class="px-6 py-5">Section</th>
+                    <th class="px-6 py-5 text-center">Transactions</th>
+                    <th class="px-6 py-5 text-right">Total Cotisé</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-cedar-50">
+                @forelse($cotisationsParSection as $section)
+                <tr class="hover:bg-cedar-50/50 transition-all">
+                    <td class="px-6 py-5 text-xs font-extrabold text-cedar-950">{{ $section->nom_section }}</td>
+                    <td class="px-6 py-5 text-xs font-bold text-cedar-600 text-center">{{ $section->nombre_transactions }}</td>
+                    <td class="px-6 py-5 text-xs font-black text-cedar-950 text-right">{{ number_format($section->total_cotise, 0, ',', ' ') }} FCFA</td>
+                </tr>
+                @empty
+                <tr><td colspan="3" class="px-6 py-12 text-center text-xs text-cedar-400 font-bold">Aucune cotisation enregistrée.</td></tr>
+=======
         <table class="w-full text-left">
             <thead class="bg-cedar-50 border-b border-cedar-100">
                 <tr class="text-[10px] uppercase tracking-[0.2em] text-cedar-500 font-black">
@@ -186,8 +210,8 @@
 {{-- RESPONSABLE VIEW: Membres de la section      --}}
 {{-- ============================================ --}}
 @isset($membresSection)
-<div class="bg-white rounded-[2rem] md:rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5 overflow-hidden">
-    <div class="p-5 md:p-8 border-b border-cedar-100">
+<div class="bg-white rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5 overflow-hidden">
+    <div class="p-8 border-b border-cedar-100">
         <h2 class="text-xl font-black text-cedar-950">Membres de votre Section</h2>
         <p class="text-xs text-cedar-500 mt-1">Cotisations et engagements des membres de votre cellule pour cet événement.</p>
     </div>
@@ -261,7 +285,7 @@
 @endphp
 
 {{-- Mon Objectif Personnel --}}
-<div class="bg-gradient-to-br from-white to-cedar-50 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-8 border border-cedar-100 shadow-xl shadow-cedar-950/5 mb-8">
+<div class="bg-gradient-to-br from-white to-cedar-50 rounded-[2.5rem] p-8 border border-cedar-100 shadow-xl shadow-cedar-950/5 mb-8">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
         <div>
             <h2 class="text-lg font-black text-cedar-950 mb-1">Mon Objectif Personnel</h2>
@@ -289,10 +313,9 @@
 </div>
 
 {{-- Bouton Cotiser --}}
-<div class="bg-gradient-to-r from-cedar-950 to-cedar-800 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-8 text-white mb-8 shadow-xl relative overflow-hidden">
+<div class="bg-gradient-to-r from-cedar-950 to-cedar-800 rounded-[2.5rem] p-8 text-white mb-8 shadow-xl relative overflow-hidden">
     <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+PC9zdmc+')] opacity-50"></div>
     <div class="relative flex flex-col md:flex-row items-center justify-between gap-4">
-        @if($prevuM > 0)
         <div>
             <h3 class="text-lg font-black">Cotiser pour cet événement</h3>
             <p class="text-xs text-cedar-200 mt-1">Effectuez un paiement sécurisé via Wave, Orange Money ou Free Money.</p>
@@ -301,23 +324,12 @@
             class="px-8 py-4 bg-white text-cedar-950 text-xs font-black rounded-2xl hover:bg-cedar-50 transition-all shadow-lg whitespace-nowrap">
             💰 Cotiser maintenant
         </button>
-        @else
-        <div>
-            <h3 class="text-lg font-black text-amber-300 flex items-center gap-2">🎯 Définir d'abord mon montant</h3>
-            <p class="text-xs text-cedar-200 mt-1">Pour commencer à cotiser pour cet événement, vous devez définir votre objectif de participation personnel.</p>
-        </div>
-        <button onclick="document.getElementById('engagement-modal').classList.remove('hidden')"
-            class="px-8 py-4 bg-amber-400 text-cedar-950 text-xs font-black rounded-2xl hover:bg-amber-300 transition-all shadow-lg whitespace-nowrap">
-            🎯 Définir mon objectif
-        </button>
-        @endif
     </div>
 </div>
 
-
 {{-- Historique de mes cotisations --}}
-<div class="bg-white rounded-[2rem] md:rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5 overflow-hidden">
-    <div class="p-5 md:p-8 border-b border-cedar-100">
+<div class="bg-white rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5 overflow-hidden">
+    <div class="p-8 border-b border-cedar-100">
         <h2 class="text-xl font-black text-cedar-950">Mes Contributions</h2>
         <p class="text-xs text-cedar-500 mt-1">Historique de vos cotisations pour cet événement.</p>
     </div>
@@ -329,7 +341,6 @@
                     <th class="px-6 py-5">Date</th>
                     <th class="px-6 py-5">Méthode</th>
                     <th class="px-6 py-5 text-right">Montant</th>
-                    <th class="px-6 py-5 text-center">Action</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-cedar-50">
@@ -339,19 +350,16 @@
                     <td class="px-6 py-5 text-xs font-medium text-cedar-900">{{ \Carbon\Carbon::parse($cotis->datecotisations)->format('d/m/Y') }}</td>
                     <td class="px-6 py-5"><span class="px-3 py-1 bg-cedar-50 border border-cedar-100 text-cedar-950 text-[10px] font-black rounded-lg uppercase">{{ $cotis->methodepayement }}</span></td>
                     <td class="px-6 py-5 text-xs font-black text-cedar-950 text-right">{{ number_format($cotis->montantcotise, 0, ',', ' ') }} FCFA</td>
-                    <td class="px-6 py-5 text-center">
-                        <button onclick="printReceipt({{ json_encode($cotis) }}, '{{ $evenement->numeroevent }}', '{{ Auth::user()->prenom }} {{ Auth::user()->nom }}')" class="px-3 py-1.5 bg-cedar-900 hover:bg-cedar-950 text-white text-[9px] font-black rounded-xl transition-all shadow-sm">
-                            🖨️ Reçu
-                        </button>
-                    </td>
                 </tr>
                 @empty
-                <tr><td colspan="5" class="px-6 py-12 text-center text-xs text-cedar-400 font-bold">Vous n'avez pas encore cotisé pour cet événement.</td></tr>
+                <tr><td colspan="4" class="px-6 py-12 text-center text-xs text-cedar-400 font-bold">Vous n'avez pas encore cotisé pour cet événement.</td></tr>
+>>>>>>> origin/master
                 @endforelse
             </tbody>
         </table>
     </div>
 </div>
+
 
 {{-- MODAL: Définir l'objectif --}}
 <div id="engagement-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden">
@@ -840,5 +848,6 @@ function printReceipt(cotis, eventName, userName) {
 
 </script>
 @endpush
+
 
 @endsection

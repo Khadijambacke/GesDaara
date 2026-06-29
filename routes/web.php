@@ -47,8 +47,6 @@ Route::get('/', [DashboardController::class, 'index'])
         Route::post('/dashboard/cotisations/store', [CotisationController::class, 'store'])->name('storecotisation');
         Route::get('/dashboard/cotisations/export', [CotisationController::class, 'exportCsv'])->name('cotisations.export');
         Route::get('/dashboard/membres/export', [MembreController::class, 'exportCsv'])->name('membres.export');
-
-
         // Création, modification et suppression d'événements
         Route::post('/dashboard/evenements/store', [EvenementController::class, 'store'])->name('storeevent');  
         Route::get('/dashboard/evenements/edit/{id}', [EvenementController::class, 'edit'])->name('editevent');
@@ -73,7 +71,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/dashboard/membre/cotisations/store', [CotisationController::class, 'membreStore'])->name('membre.cotisations.store');
     Route::post('/dashboard/participations/store', [CotisationController::class, 'storeParticipation'])->name('membre.participations.store');
-
     // Routes pour les Dépenses
     Route::get('/dashboard/depenses', [DepenseController::class, 'index'])->name('admin.depenses.index');
     Route::post('/dashboard/depenses/store', [DepenseController::class, 'store'])->name('admin.depenses.store');

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Cotisation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class EvenementController extends Controller
 {
@@ -138,7 +139,17 @@ class EvenementController extends Controller
         return redirect()->route('Toutevenement')
             ->with('success', 'Événement mis à jour avec succès');
     }
-
+    //    public function update(){
+    //     //  if($user()->role=='admin'){
+    //     //      $evenement = Evenement::where('communaute_id', Auth::user()->communaute_id)->findOrFail($id);
+    //     //      $validated=$request->validate([
+    //     //         'numeroevent'=>'required'
+    //     //         'objectifmontant'=>'required|numeric|nim 0;
+    //     //         'cotisations'  => 'required',
+    //     //      ])
+           
+    //     //  }
+    //    }
     public function destroy($id)
     {
         if (!in_array(Auth::user()->role, ['owner', 'admin', 'responsable', 'responsble'])) {

@@ -45,7 +45,6 @@ class Evenement extends Model
     public function participation(){
         return $this->hasMany(Participation::class);
     }
-    
     public function depenses()
     {
         return $this->hasMany(Depense::class, 'evenement_id');

@@ -105,6 +105,12 @@
             </div>
 
 
+            <div class="w-10 h-10 rounded-xl overflow-hidden bg-cedar-400 p-0.5">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->prenom . ' ' . Auth::user()->nom) }}&background=f5ebdf&color=3c1f19"
+                     alt="Profile"
+                     class="w-full h-full object-cover">
+            </div>
+            
             <!-- Logout Button -->
             <form method="POST" action="{{ route('logout') }}" class="ml-2 border-l border-cedar-200 pl-4">
                 @csrf

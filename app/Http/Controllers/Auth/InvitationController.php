@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Communaute;
-use Illuminate\Validation\Rules;
-
-class InvitationController extends Controller
-{
-    ///regle 
     protected function getDefaultCharter()
     {
       return "Règlement Intérieur et Charte Générale du Collectif :\n\n"
@@ -91,11 +86,15 @@ class InvitationController extends Controller
             abort(404, "Cette section/cellule n'existe pas.");
         }
 
+=======
+        // Base validation rules
+>>>>>>> origin/master
         $rules = [
             'prenom' => 'required|string|max:255',
             'nom' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email',
             'adresse' => 'required|string|max:255',
+<<<<<<< HEAD
             'indicatif' => 'required|string',
             'telephone' => 'required|string|max:255',
             'type_membre' => 'required|in:adulte,adolescent',

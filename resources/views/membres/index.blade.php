@@ -55,18 +55,6 @@
 }
 </style>
 
-<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10">
-    <div>
-        <h1 class="text-3xl font-black text-cedar-950 tracking-tight">
-            Gestion des Membres
-        </h1>
-        <p class="text-sm text-cedar-500 font-medium mt-2">
-            Administration complète des membres du collectif.
-        </p>
-    </div>
-
-    <!-- Buttons côte à côte -->
-    <div class="flex flex-wrap gap-3 w-full md:w-auto print:hidden">
         <!-- Button 1: manual add -->
         <button onclick="document.getElementById('createModal').classList.remove('hidden')" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-cedar-900 hover:bg-cedar-950 text-white rounded-2xl text-xs font-black shadow-lg shadow-cedar-950/10 transition-all w-full sm:w-auto">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
@@ -81,6 +69,7 @@
             </svg>
             Inviter par lien
         </button>
+<<<<<<< HEAD
         <!-- Button 3: export CSV -->
         <a href="{{ route('membres.export') }}" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-white hover:bg-cedar-50 text-cedar-950 border border-cedar-200 rounded-2xl text-xs font-black shadow-sm transition-all w-full sm:w-auto">
             📥 Exporter (CSV)
@@ -89,9 +78,10 @@
         <button onclick="window.print()" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-white hover:bg-cedar-50 text-cedar-950 border border-cedar-200 rounded-2xl text-xs font-black shadow-sm transition-all w-full sm:w-auto">
             🖨️ Imprimer la liste
         </button>
+=======
+>>>>>>> origin/master
     </div>
 </div>
-
 
 <!-- Table Card -->
 <div class="bg-white rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5 overflow-hidden min-h-[60vh] flex flex-col">

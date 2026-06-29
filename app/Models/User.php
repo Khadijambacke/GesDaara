@@ -103,7 +103,6 @@ class User extends Authenticatable
     {
         $this->attributes['Prenom'] = $value;
     }
-
     public function getNameAttribute()
     {
         return $this->Prenom . ' ' . $this->Nom;
@@ -119,7 +118,6 @@ public function transactions()
             ->withPivot('statut')
             ->withTimestamps();
     }
-
 public function compte()
 {
     return $this->hasOne(Compte::class, 'user_id');
