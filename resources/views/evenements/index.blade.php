@@ -35,6 +35,20 @@
 </div>
 @endif --}}
 
+<!-- Error Messages -->
+@if($errors->any())
+<div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-800 rounded-2xl text-sm font-bold space-y-1">
+    @foreach($errors->all() as $err)
+        <div class="flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            <span>{{ $err }}</span>
+        </div>
+    @endforeach
+</div>
+@endif
+
 <!-- Events Cards Grid -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
     @forelse($evenements as $event)
@@ -53,7 +67,7 @@
             }
         @endphp
         
-        <div class="bg-white rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5 p-8 flex flex-col justify-between hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
+        <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5 p-5 md:p-8 flex flex-col justify-between hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
             
             <div>
                 <!-- Header Card -->
@@ -131,7 +145,7 @@
 
         </div>
     @empty
-        <div class="md:col-span-3 text-center py-16 bg-white rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5">
+        <div class="md:col-span-3 text-center py-16 bg-white rounded-[2rem] md:rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-cedar-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
@@ -144,7 +158,7 @@
 <!-- ================= MODAL DE CRÉATION D'ÉVÉNEMENT (ADMIN ONLY) ================= -->
 @if(in_array(Auth::user()->role, ['admin', 'responsable', 'responsble']))
 <div id="createEventModal" class="fixed inset-0 bg-cedar-950/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-[2.5rem] w-full max-w-lg p-8 border border-cedar-100 shadow-2xl relative">
+    <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] w-full max-w-lg mx-4 p-5 md:p-8 max-h-[90vh] overflow-y-auto border border-cedar-100 shadow-2xl relative">
         <button onclick="document.getElementById('createEventModal').classList.add('hidden')" class="absolute top-6 right-6 p-2 bg-cedar-50 rounded-full text-cedar-500 hover:text-cedar-900 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
@@ -162,7 +176,7 @@
                 <input type="text" name="numeroevent" required placeholder="ex: Magal Touba 2026, Travaux Daara..." class="w-full px-4 py-3 bg-cedar-50 border border-cedar-100 rounded-xl text-sm font-semibold text-cedar-900 focus:bg-white focus:ring-2 focus:ring-cedar-900 outline-none">
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-black text-cedar-950 uppercase tracking-widest mb-2">Objectif (FCFA)</label>
                     <input type="number" name="objectifmontant" required min="0" placeholder="ex: 1500000" class="w-full px-4 py-3 bg-cedar-50 border border-cedar-100 rounded-xl text-sm font-semibold text-cedar-900 focus:bg-white focus:ring-2 focus:ring-cedar-900 outline-none">
@@ -173,7 +187,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-black text-cedar-950 uppercase tracking-widest mb-2">Date de début</label>
                     <input type="date" name="datedebut" required class="w-full px-4 py-3 bg-cedar-50 border border-cedar-100 rounded-xl text-sm font-semibold text-cedar-900 focus:bg-white focus:ring-2 focus:ring-cedar-900 outline-none">
@@ -203,7 +217,7 @@
 
 <!-- ================= MODAL D'ENREGISTREMENT DE COTISATION ================= -->
 <div id="cotisationModal" class="fixed inset-0 bg-cedar-950/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-[2.5rem] w-full max-w-lg p-8 border border-cedar-100 shadow-2xl relative">
+    <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] w-full max-w-lg mx-4 p-5 md:p-8 max-h-[90vh] overflow-y-auto border border-cedar-100 shadow-2xl relative">
         <button onclick="document.getElementById('cotisationModal').classList.add('hidden')" class="absolute top-6 right-6 p-2 bg-cedar-50 rounded-full text-cedar-500 hover:text-cedar-900 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
@@ -220,16 +234,20 @@
             <input type="hidden" name="evenement_id" id="cotisationEventId" value="">
 
             <div>
-                <label class="block text-xs font-black text-cedar-950 uppercase tracking-widest mb-2">Sélectionner le Membre</label>
-                <select name="membre_id" required class="w-full px-4 py-3 bg-cedar-50 border border-cedar-100 rounded-xl text-sm font-semibold text-cedar-900 focus:bg-white focus:ring-2 focus:ring-cedar-900 outline-none">
+                <label class="block text-xs font-black text-cedar-950 uppercase tracking-widest mb-2">Matricule du Membre</label>
+                <input type="text" name="matricule" placeholder="ex: SD-2026-1234" class="w-full px-4 py-3 bg-cedar-50 border border-cedar-100 rounded-xl text-sm font-semibold text-cedar-900 focus:bg-white focus:ring-2 focus:ring-cedar-900 outline-none mb-3">
+                
+                <div class="text-center text-xs font-bold text-cedar-400 my-2">— OU SÉLECTIONNER DANS LA LISTE —</div>
+                
+                <select name="membre_id" class="w-full px-4 py-3 bg-cedar-50 border border-cedar-100 rounded-xl text-sm font-semibold text-cedar-900 focus:bg-white focus:ring-2 focus:ring-cedar-900 outline-none">
                     <option value="">-- Choisir un membre --</option>
                     @foreach($membres as $mbr)
-                        <option value="{{ $mbr->id }}">{{ $mbr->prenom }} {{ $mbr->nom }} ({{ $mbr->cellule->nom ?? 'Sans section' }})</option>
+                        <option value="{{ $mbr->id }}">{{ $mbr->prenom }} {{ $mbr->nom }} ({{ $mbr->matricule }} - {{ $mbr->cellule->nomsection ?? 'Sans section' }})</option>
                     @endforeach
                 </select>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-black text-cedar-950 uppercase tracking-widest mb-2">Montant Cotisé (FCFA)</label>
                     <input type="number" name="montantcotise" required min="0" placeholder="ex: 5000" class="w-full px-4 py-3 bg-cedar-50 border border-cedar-100 rounded-xl text-sm font-semibold text-cedar-900 focus:bg-white focus:ring-2 focus:ring-cedar-900 outline-none">

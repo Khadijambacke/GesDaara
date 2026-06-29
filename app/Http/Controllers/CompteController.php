@@ -14,20 +14,21 @@ class CompteController extends Controller
         $user = Auth::user();
         $evenements = Evenement::where('communaute_id', $user->communaute_id)->get();
         return view('evenemnet.index', compact($user,$evenement));
-        
+
+
 
     }
      ///creer une cotisations 
-    // public function create(){
+    public function create(){
 
-    //     // if(!$user){
-    //     //    return redirect('Auth.login')
-    //     // }else{
+        // if(!$user){
+        //    return redirect('Auth.login')
+        // }else{
 
-    //     // }
+        // }
         
 
-    // }
+    }
 /////enregistrer une cotisations dans le compte
     public function store(){
         Cotisation::create([
@@ -38,7 +39,9 @@ class CompteController extends Controller
             'evenement_id' => $evenement->id,
             'membre_id' => $membre->id,
             'cotisations_id'=>$membre->id,
+          d,
          ]);
+         
         return redirect('montantcompte.store');
     }
 

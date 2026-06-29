@@ -36,7 +36,9 @@ class MembreController extends Controller
             'nom' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email' . ($id ? ",{$id}" : ''),
             'adresse' => 'required|string|max:255',
+=======
             'situation_matrimoniale' => 'required|in:Célibataire,Marié(e),Divorcé(e),Veuf/Veuve',
+>>>>>>> origin/master
             'indicatif' => 'required|string',
             'telephone' => 'required|string|max:255',
             'role' => 'required|string',
@@ -52,10 +54,10 @@ class MembreController extends Controller
             $rules['nin'] = 'required|string|max:255';
             $rules['profession'] = 'required|string|max:255';
         } elseif ($request->input('type_membre') === 'adolescent') {
-            $rules['niveau_etudes'] = 'required|string|max:255'; // Formation / Études
-            $rules['parent_tuteur_telephone'] = 'required|string|max:255';
-            $rules['etablissement_scolaire'] = 'nullable|string|max:255';
-            $rules['parent_tuteur_nom'] = 'nullable|string|max:255';
+<<<<<<< HEAD
+            $rules['etablissement_scolaire'] = 'required|string|max:255';
+            $rules['niveau_etudes'] = 'required|string|max:255';
+            $rules['parent_tuteur_nom'] = 'required|string|max:255';
         }
 
         return $rules;
@@ -111,32 +113,7 @@ class MembreController extends Controller
         } elseif ($request->input('type_membre') === 'adolescent') {
             $validerinfos['nin'] = null;
             $validerinfos['profession'] = null;
-        }
-
-        $membre->update($validerinfos);
-
-        return redirect()->route('Toutmembre')->with('success', 'Membre modifié avec succès.');
-    }
-
-    public function destroy($id)
-    {
-        $membre = User::where('communaute_id', Auth::user()->communaute_id)->findOrFail($id);
-        $membre->delete();
-        return redirect()->route('Toutmembre')->with('success', 'Membre supprimé avec succès.');
-    }
-
-    public function responsableMembres()
-    {
-        $user = Auth::user();
-        $membres = User::where('cellule_id', $user->cellule_id)->get();
-        $cellules = Cellule::where('id', $user->cellule_id)->get();
-        return view('membres.index', compact('membres', 'cellules'));
-    }
-
-    public function responsableStore(Request $request)
-    {
-        $user = Auth::user();
-        
+            $validerinfos['parent_tuteur_telephone'] = null;
         $rules = $this->getValidationRules($request);
         $validated = $request->validate($rules);
 
@@ -144,10 +121,13 @@ class MembreController extends Controller
             abort(403);
         }
 
+
         $validerchamps = $validated;
         $validerchamps['telephone'] = $request->indicatif . ' ' . $request->telephone;
         $validerchamps['communaute_id'] = $user->communaute_id;
+=======
         
+>>>>>>> origin/master
         // Generate secure temporary password and invitation token
         $validerchamps['password'] = Hash::make(Str::random(16));
         $validerchamps['invitation_token'] = Str::random(60);
@@ -195,20 +175,5 @@ class MembreController extends Controller
         } elseif ($request->input('type_membre') === 'adolescent') {
             $validerinfos['nin'] = null;
             $validerinfos['profession'] = null;
-        }
-
-        $membre->update($validerinfos);
-
-        return redirect()->route('responsable.membres')->with('success', 'Membre de votre section modifié avec succès.');
-    }
-
-    public function responsableDestroy($id)
-    {   
-        $user = Auth::user();
-        $membre = User::where('cellule_id', $user->cellule_id)->findOrFail($id);
-        $membre->delete();
-
-        return redirect()->route('responsable.membres')->with('success', 'Membre supprimé avec succès.');
-    }
-}
-
+<<<<<<< HEAD
+            $validerinfos['parent_tuteur_telephone'] = null;

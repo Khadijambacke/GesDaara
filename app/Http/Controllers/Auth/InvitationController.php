@@ -9,13 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rules;
-
-class InvitationController extends Controller
-{
-    /**
-     * Get the default general collective charter.
-     */
+use App\Models\Communaute;
     protected function getDefaultCharter()
     {
       return "Règlement Intérieur et Charte Générale du Collectif :\n\n"
@@ -26,9 +20,7 @@ class InvitationController extends Controller
              . "5. Respect des décisions collectives : Se conformer aux orientations prises par les instances de gouvernance de la communauté.";
     }
 
-    /**
-     * Show individual invitation acceptance page.
-     */
+    
     public function accept($token)
     {
         $membre = User::where('invitation_token', $token)->first();
@@ -37,40 +29,33 @@ class InvitationController extends Controller
             return redirect()->route('login')->withErrors(['email' => "Ce lien d'activation n'est plus valide ou est expiré."]);
         }
 
-        // Get charter from the community or default one
+        // récupération de la communauté du membre
         $communaute = $membre->cellule ? $membre->cellule->communaute : null;
         if (!$communaute && $membre->communaute_id) {
-            $communaute = \App\Models\Communaute::find($membre->communaute_id);
+            $communaute = Communaute::find($membre->communaute_id);
         }
         $charte = ($communaute && !empty($communaute->charte)) ? $communaute->charte : $this->getDefaultCharter();
 
         return view('auth.accept-invitation', compact('membre', 'charte', 'token'));
     }
 
-    /**
-     * Save invitation activation and password definition.
-     */
+   
     public function storeAccept(Request $request, $token)
     {
         $membre = User::where('invitation_token', $token)->first();
-        //invitaion unique par token
-        
-
         if (!$membre) {
             return redirect()->route('login')->withErrors(['email' => "Ce lien d'activation n'est plus valide ou est expiré."]);
         }
-
         $request->validate([
             'cgu_accepted' => 'required|accepted',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
-
-       ///redefinition mot de passe par membre
+       
         $membre->update([
             'password' => Hash::make($request->password),
             'cgu_accepted' => true,
             'cgu_accepted_at' => now(),
-            'invitation_token' => null, // Invalidate token after single use
+            'invitation_token' => null, 
         ]);
 
         Auth::login($membre);
@@ -78,9 +63,7 @@ class InvitationController extends Controller
         return redirect()->route('dashboard')->with('success', 'Votre compte a été activé avec succès. Bienvenue !');
     }
 
-    /**
-     * Show global registration form for a section.
-     */
+  
     public function registerSection($cellule_token)
     {
         $cellule = Cellule::where('registration_token', $cellule_token)->with('communaute')->first();
@@ -94,9 +77,7 @@ class InvitationController extends Controller
         return view('auth.register-section', compact('cellule', 'charte'));
     }
 
-    /**
-     * Store self-registered user from global section link.
-     */
+    
     public function storeRegisterSection(Request $request, $cellule_token)
     {
         $cellule = Cellule::where('registration_token', $cellule_token)->first();
@@ -105,13 +86,15 @@ class InvitationController extends Controller
             abort(404, "Cette section/cellule n'existe pas.");
         }
 
+=======
         // Base validation rules
+>>>>>>> origin/master
         $rules = [
             'prenom' => 'required|string|max:255',
             'nom' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email',
             'adresse' => 'required|string|max:255',
-            'situation_matrimoniale' => 'required|in:Célibataire,Marié(e),Divorcé(e),Veuf/Veuve',
+<<<<<<< HEAD
             'indicatif' => 'required|string',
             'telephone' => 'required|string|max:255',
             'type_membre' => 'required|in:adulte,adolescent',
@@ -128,10 +111,9 @@ class InvitationController extends Controller
             $rules['nin'] = 'required|string|max:255';
             $rules['profession'] = 'required|string|max:255';
         } elseif ($request->input('type_membre') === 'adolescent') {
-            $rules['niveau_etudes'] = 'required|string|max:255'; // Formation / Études
-            $rules['parent_tuteur_telephone'] = 'required|string|max:255';
-            $rules['etablissement_scolaire'] = 'nullable|string|max:255';
-            $rules['parent_tuteur_nom'] = 'nullable|string|max:255';
+            $rules['etablissement_scolaire'] = 'required|string|max:255';
+            $rules['niveau_etudes'] = 'required|string|max:255';
+            $rules['parent_tuteur_nom'] = 'required|string|max:255';
         }
 
         $validated = $request->validate($rules);
@@ -140,11 +122,11 @@ class InvitationController extends Controller
         $validerchamps['telephone'] = $request->indicatif . ' ' . $request->telephone;
         $validerchamps['communaute_id'] = $cellule->communaute_id;
         $validerchamps['cellule_id'] = $cellule->id;
-        $validerchamps['role'] = 'membre'; // Self-registered are always members
+        $validerchamps['role'] = 'membre'; 
         $validerchamps['password'] = Hash::make($request->password);
         $validerchamps['cgu_accepted'] = true;
         $validerchamps['cgu_accepted_at'] = now();
-        $validerchamps['invitation_token'] = null; // No token needed since they directly register
+        $validerchamps['invitation_token'] = null; 
 
         $user = User::create($validerchamps);
 

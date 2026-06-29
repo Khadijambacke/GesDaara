@@ -22,4 +22,7 @@ class Participation extends Model
     {
         return $this->belongsTo(Evenement::class, 'evenement_id');
     }
+    public function compte(){
+        
+    }
 }

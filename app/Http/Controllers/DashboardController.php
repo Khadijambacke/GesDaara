@@ -8,18 +8,7 @@ use App\Models\Cellule;
 use App\Models\User;
 use App\Models\Evenement;
 use App\Models\Cotisation;
-
-class DashboardController extends Controller
-{
-    public function index()
-    {
-        $user = Auth::user();
-        if (!$user) {
-            return redirect()->route('register');
-        }
-       
-        if ($user->role === 'admin' || $user->role === 'owner') {
-            return view('Dashboard.dashboardadmin');
+use Illuminate\Support\Facades\DB;
         } elseif ($user->role === 'responsble' || $user->role === 'responsable') {
             $cellule = Cellule::find($user->cellule_id);
             $totalMembres = User::where('cellule_id', $user->cellule_id)->count();
