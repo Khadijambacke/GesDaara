@@ -6,7 +6,7 @@
 <div class="space-y-8 animate-fade-in">
     
     <!-- Welcome Header Card -->
-    <div class="bg-gradient-to-br from-cedar-900 via-cedar-950 to-cedar-900 rounded-[2.5rem] p-8 md:p-10 border border-cedar-850 shadow-2xl relative overflow-hidden">
+    <div class="bg-gradient-to-br from-cedar-900 via-cedar-950 to-cedar-900 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-8 md:p-6 md:p-10 border border-cedar-850 shadow-2xl relative overflow-hidden">
         <div class="absolute -right-10 -top-10 opacity-10">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-48 w-48 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -36,7 +36,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         
         <!-- Total Members -->
-        <div class="bg-white p-8 rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5 hover:scale-[1.02] transition-all duration-300 flex items-center justify-between">
+        <div class="bg-white p-5 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5 hover:scale-[1.02] transition-all duration-300 flex items-center justify-between">
             <div class="space-y-2">
                 <p class="text-xs font-black text-cedar-400 uppercase tracking-widest">Membres Section</p>
                 <h3 class="text-3xl font-black text-cedar-950 tracking-tight">{{ $totalMembres }}</h3>
@@ -53,7 +53,7 @@
         </div>
 
         <!-- Community Events -->
-        <div class="bg-white p-8 rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5 hover:scale-[1.02] transition-all duration-300 flex items-center justify-between">
+        <div class="bg-white p-5 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5 hover:scale-[1.02] transition-all duration-300 flex items-center justify-between">
             <div class="space-y-2">
                 <p class="text-xs font-black text-cedar-400 uppercase tracking-widest">Événements</p>
                 <h3 class="text-3xl font-black text-cedar-950 tracking-tight">{{ $evenementsActifs }}</h3>
@@ -67,7 +67,7 @@
         </div>
 
         <!-- Total Collected -->
-        <div class="bg-white p-8 rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5 hover:scale-[1.02] transition-all duration-300 flex items-center justify-between">
+        <div class="bg-white p-5 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-cedar-100 shadow-xl shadow-cedar-950/5 hover:scale-[1.02] transition-all duration-300 flex items-center justify-between">
             <div class="space-y-2">
                 <p class="text-xs font-black text-cedar-400 uppercase tracking-widest">Contributions Section</p>
                 <h3 class="text-3xl font-black text-cedar-950 tracking-tight">{{ number_format($totalCotise, 0, ',', ' ') }} <span class="text-xs font-bold text-cedar-500">FCFA</span></h3>
@@ -89,7 +89,7 @@
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
         
         <!-- Left: Latest Contributions Table -->
-        <div class="xl:col-span-2 bg-white rounded-[2.5rem] p-8 border border-cedar-100 shadow-xl shadow-cedar-950/5">
+        <div class="xl:col-span-2 bg-white rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-8 border border-cedar-100 shadow-xl shadow-cedar-950/5">
             <div class="flex justify-between items-center mb-6">
                 <div>
                     <h3 class="text-xl font-black text-cedar-950">Dernières Activités</h3>
@@ -149,7 +149,7 @@
         <div class="space-y-6">
             
             <!-- Quick Actions Panel -->
-            <div class="bg-white rounded-[2.5rem] p-8 border border-cedar-100 shadow-xl shadow-cedar-950/5">
+            <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-8 border border-cedar-100 shadow-xl shadow-cedar-950/5">
                 <h4 class="text-xs font-black text-cedar-950 uppercase tracking-widest mb-6">Actions Rapides</h4>
                 
                 <div class="space-y-4">
@@ -199,6 +199,105 @@
         </div>
 
     </div>
+
+    <!-- ===== MA CARTE OFFICIELLE ===== -->
+    <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] p-6 border border-cedar-100 shadow-xl shadow-cedar-950/5">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-black text-cedar-950">Ma Carte Officielle</h2>
+            <span class="text-xs text-cedar-400 font-semibold">Carte de responsable de section</span>
+        </div>
+
+        <div id="member-card-render"
+             class="w-full max-w-[520px] mx-auto rounded-[1.2rem] overflow-hidden shadow-2xl border border-cedar-200 select-none"
+             style="background: #fbf6f1;">
+
+            <div style="background: linear-gradient(135deg, #3c1f19 0%, #62372c 60%, #955039 100%); height: 10px;"></div>
+
+            <div class="flex" style="min-height: 200px;">
+                <!-- Colonne gauche -->
+                <div class="flex flex-col items-center justify-between py-5 px-4 flex-shrink-0"
+                     style="width: 140px; background: linear-gradient(180deg, #3c1f19 0%, #62372c 100%);">
+                    <div class="text-center">
+                        <div class="w-8 h-8 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center mx-auto mb-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="#dbb696" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                        </div>
+                        <p style="color: #dbb696; font-size: 8px; font-weight: 900; letter-spacing: 0.15em; text-transform: uppercase;">SunuDaara</p>
+                    </div>
+                    <div class="rounded-xl overflow-hidden border-2 shadow-lg" style="width: 88px; height: 100px; border-color: rgba(219,182,150,0.4); background: #2d1612;">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->prenom . ' ' . Auth::user()->nom) }}&background=f5ebdf&color=3c1f19&bold=true&size=128&format=png"
+                             alt="Photo" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="text-center">
+                        <span style="background: rgba(219,182,150,0.15); color: #dbb696; font-size: 8px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(219,182,150,0.3);">
+                            Responsable
+                        </span>
+                    </div>
+                </div>
+
+                <div style="width: 1px; background: #e9d4bf; flex-shrink: 0;"></div>
+
+                <!-- Colonne droite -->
+                <div class="flex flex-col justify-between flex-1 py-4 px-5">
+                    <div class="border-b pb-2 mb-3" style="border-color: #e9d4bf;">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p style="font-size: 10px; font-weight: 900; color: #795039; letter-spacing: 0.2em; text-transform: uppercase;">Carte de Membre</p>
+                                <h3 style="font-size: 15px; font-weight: 900; color: #3c1f19; letter-spacing: 0.05em; text-transform: uppercase; margin-top: 1px;">
+                                    {{ Auth::user()->prenom }} {{ Auth::user()->nom }}
+                                </h3>
+                            </div>
+                            <span style="font-size: 9px; font-weight: 900; color: #b36443; letter-spacing: 0.15em; text-transform: uppercase; background: #f5ebdf; padding: 3px 8px; border-radius: 6px; border: 1px solid #e9d4bf;">SUNUDAARA</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-3 flex-1">
+                        <div class="col-span-2">
+                            <p style="font-size: 8px; font-weight: 900; color: #795039; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1px;">Prénom & Nom</p>
+                            <p style="font-size: 13px; font-weight: 900; color: #3c1f19; text-transform: uppercase;">{{ Auth::user()->prenom }} {{ Auth::user()->nom }}</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 8px; font-weight: 900; color: #795039; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1px;">Matricule</p>
+                            <p style="font-size: 12px; font-weight: 700; color: #3c1f19;">{{ Auth::user()->matricule ?? 'Non assigné' }}</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 8px; font-weight: 900; color: #795039; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1px;">Né(e) le</p>
+                            <p style="font-size: 12px; font-weight: 700; color: #3c1f19;">
+                                @php $dn = Auth::user()->date_naissance; echo $dn ? \Carbon\Carbon::parse($dn)->format('d/m/Y') : 'Non renseignée'; @endphp
+                            </p>
+                        </div>
+                        <div>
+                            <p style="font-size: 8px; font-weight: 900; color: #795039; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1px;">Téléphone</p>
+                            <p style="font-size: 12px; font-weight: 700; color: #3c1f19;">{{ Auth::user()->telephone ?? 'Non renseigné' }}</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 8px; font-weight: 900; color: #795039; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1px;">Membre depuis</p>
+                            <p style="font-size: 12px; font-weight: 700; color: #3c1f19;">{{ Auth::user()->created_at ? Auth::user()->created_at->format('d M Y') : 'Récemment' }}</p>
+                        </div>
+                        <div class="col-span-2">
+                            <p style="font-size: 8px; font-weight: 900; color: #795039; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1px;">Cellule / Section</p>
+                            <p style="font-size: 12px; font-weight: 700; color: #3c1f19;">{{ Auth::user()->cellule->nomsection ?? 'Non assignée' }}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-end justify-between mt-3 pt-2 border-t" style="border-color: #e9d4bf;">
+                        <div>
+                            <p style="font-size: 8px; color: #b36443; font-weight: 600;">Document officiel de la communauté</p>
+                            <p style="font-size: 7px; color: #cc926b; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;">ID : SD-{{ strtoupper(substr(Auth::user()->matricule ?? Auth::id(), 0, 8)) }}</p>
+                        </div>
+                        <div style="background: white; padding: 4px; border-radius: 8px; border: 1px solid #e9d4bf;">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=56x56&data={{ urlencode('SunuDaara|MAT:' . (Auth::user()->matricule ?? Auth::user()->id) . '|' . Auth::user()->prenom . ' ' . Auth::user()->nom . '|TEL:' . (Auth::user()->telephone ?? 'N/A')) }}&color=3c1f19&bgcolor=ffffff&margin=1"
+                                 alt="QR Code" style="width: 56px; height: 56px; display: block;" crossorigin="anonymous">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #3c1f19 0%, #62372c 100%); height: 6px;"></div>
+        </div>
+    </div>
+    <!-- ===== FIN CARTE ===== -->
 
 </div>
 @endsection

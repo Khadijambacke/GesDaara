@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\Cotisation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class EvenementController extends Controller
 {
@@ -56,55 +55,55 @@ class EvenementController extends Controller
     {
         $user = Auth::user();
         $evenement = Evenement::where('communaute_id', $user->communaute_id)->findOrFail($id);
-        
-        // Charger les cotisations pour cet événement selon le rôle
-        ///
+
+        // ── ADMIN ────────────────────────────────────────────────────────────
         if ($user->role === 'admin' || $user->role === 'owner') {
-            // L'admin voit les cotisations groupées par section
-            $cotisationsParSection = Cotisation::where('cotisations.evenement_id', $evenement->id)
+
+            // Cotisations par section : Section Dakar → 20 000 FCFA, Section Touba → 450 FCFA
+            $cotisationsParSection = Cotisation::where('evenement_id', $evenement->id)
                 ->join('users', 'cotisations.membre_id', '=', 'users.id')
                 ->leftJoin('cellules', 'users.cellule_id', '=', 'cellules.id')
-                ->select(
-                    'users.cellule_id',
-                    DB::raw('COALESCE(cellules.nomsection, "Sans Section") as nom_section'),
-                    DB::raw('SUM(cotisations.montantcotise) as total_cotise'),
-                    DB::raw('COUNT(cotisations.id) as nombre_transactions')
-                )
-                ->groupBy('users.cellule_id', 'cellules.nomsection')
-                ->orderBy('total_cotise', 'desc')
+                ->selectRaw('
+                    COALESCE(cellules.nomsection, "Sans section") as nom_section,
+                    COUNT(cotisations.id) as nombre_transactions,
+                    SUM(cotisations.montantcotise) as total_cotise
+                ')
+                ->groupBy('cellules.id', 'cellules.nomsection')
+                ->orderByDesc('total_cotise')
                 ->get();
-            
+
             return view('evenements.show', compact('evenement', 'cotisationsParSection'));
-        } elseif (in_array($user->role, ['responsable', 'responsble'])) {
-            // Le responsable voit les cotisations de sa section, pour chaque membre
+        }
+
+        // ── RESPONSABLE ──────────────────────────────────────────────────────
+        if (in_array($user->role, ['responsable', 'responsble'])) {
+
             $membresSection = User::where('cellule_id', $user->cellule_id)
-                ->with(['compte', 'participations' => function($query) use ($evenement) {
-                    $query->where('evenement_id', $evenement->id);
+                ->with(['compte', 'participations' => function ($q) use ($evenement) {
+                    $q->where('evenement_id', $evenement->id);
                 }])
                 ->get()
-                ->map(function($membre) use ($evenement) {
-                    $membre->cotisations_event = Cotisation::where('membre_id', $membre->id)
+                ->map(function ($membre) use ($evenement) {
+                    $membre->total_cotise_event = Cotisation::where('membre_id', $membre->id)
                         ->where('evenement_id', $evenement->id)
-                        ->latest()
-                        ->get();
-                    $membre->total_cotise_event = $membre->cotisations_event->sum('montantcotise');
+                        ->sum('montantcotise');
                     return $membre;
                 });
-                
+
             return view('evenements.show', compact('evenement', 'membresSection'));
-        } else {
-            // Le membre voit ses propres cotisations pour cet événement
-            $mesCotisations = Cotisation::where('evenement_id', $evenement->id)
-                ->where('membre_id', $user->id)
-                ->latest()
-                ->get();
-            
-            $maParticipation = \App\Models\Participation::where('user_id', $user->id)
-                ->where('evenement_id', $evenement->id)
-                ->first();
-                
-            return view('evenements.show', compact('evenement', 'mesCotisations', 'maParticipation'));
         }
+
+        // ── MEMBRE ───────────────────────────────────────────────────────────
+        $mesCotisations = Cotisation::where('membre_id', $user->id)
+            ->where('evenement_id', $evenement->id)
+            ->latest()
+            ->get();
+
+        $maParticipation = \App\Models\Participation::where('user_id', $user->id)
+            ->where('evenement_id', $evenement->id)
+            ->first();
+
+        return view('evenements.show', compact('evenement', 'mesCotisations', 'maParticipation'));
     }
 
     public function edit($id)
@@ -139,17 +138,7 @@ class EvenementController extends Controller
         return redirect()->route('Toutevenement')
             ->with('success', 'Événement mis à jour avec succès');
     }
-    //    public function update(){
-    //     //  if($user()->role=='admin'){
-    //     //      $evenement = Evenement::where('communaute_id', Auth::user()->communaute_id)->findOrFail($id);
-    //     //      $validated=$request->validate([
-    //     //         'numeroevent'=>'required'
-    //     //         'objectifmontant'=>'required|numeric|nim 0;
-    //     //         'cotisations'  => 'required',
-    //     //      ])
-           
-    //     //  }
-    //    }
+
     public function destroy($id)
     {
         if (!in_array(Auth::user()->role, ['owner', 'admin', 'responsable', 'responsble'])) {

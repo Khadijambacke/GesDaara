@@ -89,6 +89,7 @@
 <body class="flex min-h-screen overflow-hidden antialiased">
 
     {{-- Overlay --}}
+    @if(in_array(Auth::user()->role, ['admin', 'responsable', 'responsble']))
     <div id="overlay"
          onclick="toggleSidebar()"
          class="fixed inset-0 bg-black/20 hidden lg:hidden z-40">
@@ -96,6 +97,7 @@
 
     {{-- Sidebar --}}
     @include('layouts.partials.sidebar')
+    @endif
 
     {{-- Main Content --}}
     <main class="flex-1 flex flex-col h-screen overflow-hidden">
@@ -122,5 +124,6 @@
         }
     </script>
 
+    @stack('scripts')
 </body>
 </html>

@@ -36,7 +36,6 @@ class MembreController extends Controller
             'nom' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email' . ($id ? ",{$id}" : ''),
             'adresse' => 'required|string|max:255',
-            'situation_matrimoniale' => 'required|in:Célibataire,Marié(e),Divorcé(e),Veuf/Veuve',
             'indicatif' => 'required|string',
             'telephone' => 'required|string|max:255',
             'role' => 'required|string',
@@ -52,10 +51,9 @@ class MembreController extends Controller
             $rules['nin'] = 'required|string|max:255';
             $rules['profession'] = 'required|string|max:255';
         } elseif ($request->input('type_membre') === 'adolescent') {
-            $rules['niveau_etudes'] = 'required|string|max:255'; // Formation / Études
-            $rules['parent_tuteur_telephone'] = 'required|string|max:255';
-            $rules['etablissement_scolaire'] = 'nullable|string|max:255';
-            $rules['parent_tuteur_nom'] = 'nullable|string|max:255';
+            $rules['etablissement_scolaire'] = 'required|string|max:255';
+            $rules['niveau_etudes'] = 'required|string|max:255';
+            $rules['parent_tuteur_nom'] = 'required|string|max:255';
         }
 
         return $rules;
@@ -90,7 +88,6 @@ class MembreController extends Controller
         $cellules = Cellule::where('communaute_id', Auth::user()->communaute_id)->get();
         return view('membres.edit', compact('membre', 'cellules'));
     }
-
     public function update(Request $request, $id)
     {
         $membre = User::where('communaute_id', Auth::user()->communaute_id)->findOrFail($id);
@@ -111,6 +108,7 @@ class MembreController extends Controller
         } elseif ($request->input('type_membre') === 'adolescent') {
             $validerinfos['nin'] = null;
             $validerinfos['profession'] = null;
+            $validerinfos['parent_tuteur_telephone'] = null;
         }
 
         $membre->update($validerinfos);
@@ -136,7 +134,6 @@ class MembreController extends Controller
     public function responsableStore(Request $request)
     {
         $user = Auth::user();
-        
         $rules = $this->getValidationRules($request);
         $validated = $request->validate($rules);
 
@@ -144,10 +141,10 @@ class MembreController extends Controller
             abort(403);
         }
 
+
         $validerchamps = $validated;
         $validerchamps['telephone'] = $request->indicatif . ' ' . $request->telephone;
         $validerchamps['communaute_id'] = $user->communaute_id;
-        
         // Generate secure temporary password and invitation token
         $validerchamps['password'] = Hash::make(Str::random(16));
         $validerchamps['invitation_token'] = Str::random(60);
@@ -195,6 +192,7 @@ class MembreController extends Controller
         } elseif ($request->input('type_membre') === 'adolescent') {
             $validerinfos['nin'] = null;
             $validerinfos['profession'] = null;
+            $validerinfos['parent_tuteur_telephone'] = null;
         }
 
         $membre->update($validerinfos);
@@ -210,5 +208,62 @@ class MembreController extends Controller
 
         return redirect()->route('responsable.membres')->with('success', 'Membre supprimé avec succès.');
     }
+
+    public function exportCsv()
+    {
+        $user = Auth::user();
+        if (in_array($user->role, ['admin', 'owner'])) {
+            $membres = User::with('cellule')->where('communaute_id', $user->communaute_id)->get();
+        } else {
+            $membres = User::with('cellule')->where('cellule_id', $user->cellule_id)->get();
+        }
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="membres_' . date('Y-m-d_H-i-s') . '.csv"',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0'
+        ];
+
+        $callback = function() use ($membres) {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF)); // UTF-8 BOM
+
+            // CSV Headers
+            fputcsv($file, [
+                'Matricule',
+                'Prénom',
+                'Nom',
+                'Email',
+                'Téléphone',
+                'Adresse',
+                'Genre',
+                'Rôle',
+                'Section/Cellule',
+                'Date d\'inscription'
+            ], ';');
+
+            foreach ($membres as $mbr) {
+                fputcsv($file, [
+                    $mbr->matricule,
+                    $mbr->prenom ?? $mbr->Prenom,
+                    $mbr->nom ?? $mbr->Nom,
+                    $mbr->email,
+                    $mbr->telephone,
+                    $mbr->adresse,
+                    ucfirst($mbr->genre ?? ''),
+                    ucfirst($mbr->role ?? 'Membre'),
+                    $mbr->cellule->nomsection ?? 'Sans section',
+                    $mbr->created_at ? $mbr->created_at->format('d/m/Y') : ''
+                ], ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }
+
 

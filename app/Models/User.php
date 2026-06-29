@@ -84,14 +84,41 @@ class User extends Authenticatable
         return $this->belongsTo(Communaute::class, 'communaute_id');
     }
     
+    public function getNomAttribute($value)
+    {
+        return $this->attributes['Nom'] ?? ($this->attributes['nom'] ?? $value);
+    }
+
+    public function setNomAttribute($value)
+    {
+        $this->attributes['Nom'] = $value;
+    }
+
+    public function getPrenomAttribute($value)
+    {
+        return $this->attributes['Prenom'] ?? ($this->attributes['prenom'] ?? $value);
+    }
+
+    public function setPrenomAttribute($value)
+    {
+        $this->attributes['Prenom'] = $value;
+    }
+
     public function getNameAttribute()
     {
-        return ($this->Prenom ?? $this->prenom) . ' ' . ($this->Nom ?? $this->nom);
+        return $this->Prenom . ' ' . $this->Nom;
     }
 public function transactions()
 {
     return $this->hasMany(Transaction::class);
 }
+
+    public function commissions()
+    {
+        return $this->belongsToMany(Commission::class)
+            ->withPivot('statut')
+            ->withTimestamps();
+    }
 
 public function compte()
 {

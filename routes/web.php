@@ -10,6 +10,8 @@ use App\Http\Controllers\CelluleController;
 use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\CotisationController;
 use App\Http\Controllers\CompteController;
+use App\Http\Controllers\DepenseController;
+use App\Http\Controllers\CommissionController;
 
 use App\Http\Controllers\Auth\InvitationController;
 use Inertia\Inertia;
@@ -26,6 +28,7 @@ Route::get('/', [DashboardController::class, 'index'])
     ////////////adminpanel///
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/dashboard/membres', [MembreController::class, 'index'])->name('Toutmembre');
+        Route::get('/dashboard/cotisations', [CotisationController::class, 'adminIndex'])->name('admin.cotisations');
         Route::get('/dashboard/membres/create', [MembreController::class, 'create'])->name('creatememebre');
         Route::post('/dashboard/membres/store', [MembreController::class, 'store'])->name('storememebre');  
         Route::get('/dashboard/membres/edit/{id}', [MembreController::class, 'edit'])->name('editmemebre');
@@ -42,8 +45,10 @@ Route::get('/', [DashboardController::class, 'index'])
     // Routes partagées pour admin et responsable
     Route::middleware(['auth', 'role:admin,owner,responsable,responsble'])->group(function () {
         Route::post('/dashboard/cotisations/store', [CotisationController::class, 'store'])->name('storecotisation');
-       
-        
+        Route::get('/dashboard/cotisations/export', [CotisationController::class, 'exportCsv'])->name('cotisations.export');
+        Route::get('/dashboard/membres/export', [MembreController::class, 'exportCsv'])->name('membres.export');
+
+
         // Création, modification et suppression d'événements
         Route::post('/dashboard/evenements/store', [EvenementController::class, 'store'])->name('storeevent');  
         Route::get('/dashboard/evenements/edit/{id}', [EvenementController::class, 'edit'])->name('editevent');
@@ -54,6 +59,7 @@ Route::get('/', [DashboardController::class, 'index'])
     // Routes spécifiques pour le responsable de section (cellule)
     Route::middleware(['auth', 'role:responsable,responsble'])->group(function () {
         Route::get('/dashboard/responsable/membres', [MembreController::class, 'responsableMembres'])->name('responsable.membres');
+        Route::get('/dashboard/responsable/cotisations', [CotisationController::class, 'responsableIndex'])->name('responsable.cotisations');
         Route::post('/dashboard/responsable/membres/store', [MembreController::class, 'responsableStore'])->name('responsable.storemembre');
         Route::get('/dashboard/responsable/membres/edit/{id}', [MembreController::class, 'responsableEdit'])->name('responsable.editmembre');
         Route::put('/dashboard/responsable/membres/update/{id}', [MembreController::class, 'responsableUpdate'])->name('responsable.updatemembre');
@@ -67,6 +73,19 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/dashboard/membre/cotisations/store', [CotisationController::class, 'membreStore'])->name('membre.cotisations.store');
     Route::post('/dashboard/participations/store', [CotisationController::class, 'storeParticipation'])->name('membre.participations.store');
+
+    // Routes pour les Dépenses
+    Route::get('/dashboard/depenses', [DepenseController::class, 'index'])->name('admin.depenses.index');
+    Route::post('/dashboard/depenses/store', [DepenseController::class, 'store'])->name('admin.depenses.store');
+    Route::delete('/dashboard/depenses/delete/{id}', [DepenseController::class, 'destroy'])->name('admin.depenses.destroy');
+
+    // Routes pour les Commissions
+    Route::get('/dashboard/commissions', [CommissionController::class, 'index'])->name('admin.commissions.index');
+    Route::post('/dashboard/commissions/store', [CommissionController::class, 'store'])->name('admin.commissions.store');
+    Route::post('/dashboard/commissions/{id}/join', [CommissionController::class, 'join'])->name('admin.commissions.join');
+    Route::post('/dashboard/commissions/{commissionId}/approve/{userId}', [CommissionController::class, 'approve'])->name('admin.commissions.approve');
+    Route::post('/dashboard/commissions/{commissionId}/reject/{userId}', [CommissionController::class, 'reject'])->name('admin.commissions.reject');
+    Route::delete('/dashboard/commissions/{id}/leave', [CommissionController::class, 'leave'])->name('admin.commissions.leave');
 });
 
 // Routes publiques pour l'activation d'invitation et acceptation de la charte (individuelle)

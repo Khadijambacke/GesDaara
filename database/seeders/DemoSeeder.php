@@ -35,6 +35,12 @@ class DemoSeeder extends Seeder
             'localite' => 'Dakar',
             'communaute_id' =>$commu1 ->id
           ]);
+            $cellule4=Cellule::create([
+            'numerosection' => 0011,
+            'nomsection' => 'Section Mbour',
+            'localite' => 'Dakar',
+            'communaute_id' =>$commu1 ->id
+          ]);
 
           $cellule2=Cellule::create([
             'numerosection' => 0012,
@@ -122,6 +128,23 @@ class DemoSeeder extends Seeder
             'role'    => 'responsble', 
             'communaute_id' =>$commu1->id,
             'cellule_id'    => $cellule1->id
+        ]);
+
+        // Commissions
+        \App\Models\Commission::create([
+            'nom' => 'Commission Culturelle',
+            'description' => 'Chargée de l\'enseignement religieux, de l\'organisation des conférences et des chants religieux (Dahiras).',
+            'communaute_id' => $commu1->id
+        ]);
+        \App\Models\Commission::create([
+            'nom' => 'Commission Organisation',
+            'description' => 'Gère la logistique, la sonorisation, l\'accueil des invités et la restauration lors des événements.',
+            'communaute_id' => $commu1->id
+        ]);
+        \App\Models\Commission::create([
+            'nom' => 'Commission Finance',
+            'description' => 'Responsable du suivi des cotisations, de la comptabilité générale et de la validation des dépenses.',
+            'communaute_id' => $commu1->id
         ]);
     }
 }
